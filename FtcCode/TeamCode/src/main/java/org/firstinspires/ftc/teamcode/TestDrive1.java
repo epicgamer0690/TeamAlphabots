@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         backward();
         Sleep(3000);
-
+        resetEncoders();
         forward();
 
         Sleep(3000);
