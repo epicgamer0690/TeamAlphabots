@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -22,6 +23,12 @@ import java.lang.Thread;
     DcMotor backRightWheel;
     //DcMotor rightWheel;
     double drivePower = 0.5;
+    int rotation = 363;
+
+
+
+    private ElapsedTime runtime= new ElapsedTime();
+
 
     @Override
     public void init() {
@@ -30,18 +37,36 @@ import java.lang.Thread;
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
 
-
     }
+
     @Override
-    public void loop()   {
 
-        setForwardDirection();
-        setForwardPower(0.5);
-        sleep(5000);
-        setForwardPower(0);
+    public void start() {
+        runtime.reset();
+        runtime.startTime();
+    }
+
+    @Override
+    public void loop() {
+        for(int i = 1; i <= 3; i++) {
+            forward();
+        }
+        stop();
 
 
     }
+
+    @Override
+    public void stop() {
+        leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+    }
+
+
 
 
 
@@ -63,6 +88,8 @@ import java.lang.Thread;
         rightWheel.setPower(drivePower);
         backLeftWheel.setPower(drivePower);
         //sleep(milliseconds 1000);
+
+
 
     }
 
@@ -128,30 +155,55 @@ import java.lang.Thread;
 
     }
 
-    public void setForwardPower(double drivePower);
+    public void forward() {
 
-        leftWheel.setPower(drivePower);
-        rightWheel.setPower(drivePower);
-        backRightWheel.setPower(drivePower);
-        backLeftWheel.setPower(drivePower);
+
+        leftWheel.setTargetPosition(-rotation);
+        //rightWheel.setTargetPosition(rotation);
+        //backLeftWheel.setTargetPosition(-rotation);
+        //backRightWheel.setTargetPosition(rotation);
+
+        leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        /*
+        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        */
+
+
+        leftWheel.setPower(-drivePower);
+        /*
+        rightWheel.setPower(-drivePower);
+        backLeftWheel.setPower(-drivePower);
+        backRightWheel.setPower(-drivePower);
+
+         */
 
 
     }
 
     public void backward() {
 
-        leftWheel.setDirection(DcMotor.Direction.FORWARD);
-        rightWheel.setDirection(DcMotor.Direction.REVERSE);
-        backLeftWheel.setDirection(DcMotor.Direction.FORWARD);
-        backRightWheel.setDirection(DcMotor.Direction.REVERSE);
+
+        leftWheel.setTargetPosition(rotation);
+        rightWheel.setTargetPosition(rotation);
+        backLeftWheel.setTargetPosition(rotation);
+        backRightWheel.setTargetPosition(rotation);
+
+        leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftWheel.setPower(drivePower);
         rightWheel.setPower(drivePower);
-        backRightWheel.setPower(drivePower);
         backLeftWheel.setPower(drivePower);
+        backRightWheel.setPower(drivePower);
+
 
 
     }
+
 
 
 
