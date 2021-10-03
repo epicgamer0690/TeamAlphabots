@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="TestDrive1", group="Training")
-    public class TestDrive1 extends OpMode {
+@TeleOp(name="TeleOpTest", group="Training")
+    public class TeleOpTest extends OpMode {
 
 
 
@@ -23,12 +25,31 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     private ElapsedTime runtime= new ElapsedTime();
 
+    public void moveDriveTrain() {
+        double vertical = 0; //Moves forwards and backwards
+        double horizontal = 0; //Move side-to-side
+        double pivot = 0;
+        vertical = -gamepad1.left_stick_y;
+        horizontal = gamepad1.left_stick_x;
+        pivot = gamepad1.right_stick_x;
+
+        rightWheel.setPower(pivot + (-vertical + horizontal));
+        backRightWheel.setPower(pivot + (-vertical - horizontal));
+        leftWheel.setPower(pivot + (-vertical - horizontal));
+        backLeftWheel.setPower(pivot + (-vertical + horizontal));
+
+
+    }
+
     @Override
     public void init() {
         leftWheel = hardwareMap.dcMotor.get("left_wheel");
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+
+        rightWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
@@ -48,28 +69,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Override
     public void start() {
-        runtime.reset();
-        runtime.startTime();
 
-        //backward();
-        //Sleep(3000);
-        //resetEncoders();
-        horizontalLeft();
-        Sleep(3000);
-        resetEncoders();
-
-        horizontalRight();
-        Sleep(3000);
-        resetEncoders();
-
-        requestOpModeStop();
 
 
     }
 
     @Override
     public void loop() {
-
+        moveDriveTrain();
     }
     @Override
     public void stop() {
@@ -162,7 +169,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(drivePower);
     }
 
-    public void horizontalRight() {
+    public void right() {
 
         leftWheel.setTargetPosition(-rotation);
         rightWheel.setTargetPosition(-rotation);
@@ -180,7 +187,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(drivePower);
     }
 
-    public void horizontalLeft() {
+    public void left() {
 
         leftWheel.setTargetPosition(rotation);
         rightWheel.setTargetPosition(rotation);
@@ -200,14 +207,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     public void backwardsDiagonalRight() {
 
-        leftWheel.setTargetPosition(rotation);
-        backRightWheel.setTargetPosition(-rotation);
+        leftWheel.setTargetPosition(-rotation);
+        backRightWheel.setTargetPosition(rotation);
 
         leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftWheel.setPower(drivePower);
-        backRightWheel.setPower(-drivePower);
+        leftWheel.setPower(-drivePower);
+        backRightWheel.setPower(drivePower);
 
     }
 
@@ -231,6 +238,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backLeftWheel.setPower(-drivePower);
         backRightWheel.setPower(drivePower);
 
+        leftWheel.setTargetPosition(-300);
+        rightWheel.setTargetPosition(300);
+        backLeftWheel.setTargetPosition(-300);
+        backRightWheel.setTargetPosition(300);
+
+        leftWheel.setPower(-0.2);
+        rightWheel.setPower(0.2);
+        backLeftWheel.setPower(-0.2);
+        backRightWheel.setPower(0.2);
 
 
 
