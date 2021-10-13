@@ -39,6 +39,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backLeftWheel.setPower(pivot + (-vertical + horizontal));
 
 
+
+
     }
 
     @Override
@@ -48,8 +50,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
 
-        rightWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
+        backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
 
     }
 

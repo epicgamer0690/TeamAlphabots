@@ -4,9 +4,24 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
 
-@Autonomous(name="TestDrive1", group="Training")
-    public class TestDrive1 extends OpMode {
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Locale;
+
+@Autonomous(name="ColorSensorTest", group="Training")
+    public class ColorSensorTest extends OpMode {
 
 
 
@@ -14,6 +29,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
+    ColorSensor color;
     double drivePower = 0.5;
      //1 rotation = 360
 
@@ -29,6 +45,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+        color = hardwareMap.get(ColorSensor.class, "color_sensor");
+
 
     }
 
@@ -50,7 +68,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     public void start() {
 
 
-        forward(1000);
+
+        /*
         Sleep(1000);
         resetEncoders();
 
@@ -67,12 +86,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         Sleep(1000);
         resetEncoders();
 
+         */
+
 
     }
 
     @Override
     public void loop() {
-
+        telemetry.addData("Red", color.red());
+        telemetry.addData("Green", color.green());
+        telemetry.addData("Blue", color.blue());
+        telemetry.update();
     }
     @Override
     public void stop() {
