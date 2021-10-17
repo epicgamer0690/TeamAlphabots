@@ -2,26 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
-import java.util.Locale;
-
-@Autonomous(name="ColorSensorTest", group="Training")
-    public class ColorSensorTest extends OpMode {
+@Autonomous(name="ServoTest", group="Training")
+    public class ServoTest extends OpMode {
 
 
 
@@ -29,7 +18,7 @@ import java.util.Locale;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    ColorSensor color;
+    Servo servo;
     double drivePower = 0.5;
      //1 rotation = 360
 
@@ -45,10 +34,7 @@ import java.util.Locale;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        color = hardwareMap.get(ColorSensor.class, "color_sensor");
-        color.enableLed(true);
-
-
+        servo = hardwareMap.servo.get("front_servo");
     }
 
     public void Sleep(int milliseconds) {
@@ -65,46 +51,15 @@ import java.util.Locale;
         backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+
     @Override
     public void start() {
-
-
-
-        /*
-        Sleep(1000);
-        resetEncoders();
-
-        horizontalRight(1000);
-        Sleep(1000);
-        resetEncoders();
-
-
-        backward(1000);
-        Sleep(3000);
-        resetEncoders();
-
-        horizontalLeft(1000);
-        Sleep(1000);
-        resetEncoders();
-
-         */
-
-
+        servo.setPosition(360);
     }
 
     @Override
     public void loop() {
 
-        telemetry.addData("Red", color.red());
-        telemetry.addData("Green", color.green());
-        telemetry.addData("Blue", color.blue());
-
-        if(((2 * color.blue()) < color.red()) && (2 * color.blue() < color.green())) {
-            telemetry.addData("Detected Yellow ", true );
-        } else {
-            telemetry.addData("Detected Yellow ", false);
-        }
-        telemetry.update();
     }
     @Override
     public void stop() {

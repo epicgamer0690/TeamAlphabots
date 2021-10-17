@@ -25,23 +25,39 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     private ElapsedTime runtime= new ElapsedTime();
 
+    public void spin() {
+        double pivot = 0;
+        pivot = gamepad1.right_stick_x;;
+        if(pivot < 0) {
+            rightWheel.setPower(1);
+            backRightWheel.setPower(1);
+            leftWheel.setPower(-1);
+            backLeftWheel.setPower(-1);
+        }
+        if(pivot > 0) {
+            rightWheel.setPower(-1);
+            backRightWheel.setPower(-1);
+            leftWheel.setPower(1);
+            backLeftWheel.setPower(1);
+        }
+    }
+
     public void moveDriveTrain() {
         double vertical = 0; //Moves forwards and backwards
         double horizontal = 0; //Move side-to-side
         double pivot = 0;
         vertical = -gamepad1.left_stick_y;
         horizontal = gamepad1.left_stick_x;
-        pivot = gamepad1.right_stick_x;
 
         rightWheel.setPower(pivot + (-vertical + horizontal));
         backRightWheel.setPower(pivot + (-vertical - horizontal));
         leftWheel.setPower(pivot + (-vertical - horizontal));
         backLeftWheel.setPower(pivot + (-vertical + horizontal));
 
-
-
-
+        spin();
     }
+
+
 
     @Override
     public void init() {
@@ -79,6 +95,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void loop() {
         moveDriveTrain();
+
     }
     @Override
     public void stop() {
