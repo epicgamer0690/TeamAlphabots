@@ -50,22 +50,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     public void start() {
 
 
-        forward(1000);
+
+
+        backLeftWheel.setPower(1);
         Sleep(1000);
-        resetEncoders();
+        backRightWheel.setPower(1);
 
-        horizontalRight(1000);
-        Sleep(1000);
-        resetEncoders();
-
-
-        backward(1000);
-        Sleep(3000);
-        resetEncoders();
-
-        horizontalLeft(1000);
-        Sleep(1000);
-        resetEncoders();
 
 
     }

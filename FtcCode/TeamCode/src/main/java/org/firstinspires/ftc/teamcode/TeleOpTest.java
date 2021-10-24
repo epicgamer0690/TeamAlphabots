@@ -19,40 +19,41 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     double drivePower = 0.5;
     int rotation = 1000; //1 rotation = 360
 
-
-
-
-
     private ElapsedTime runtime= new ElapsedTime();
+
+
 
     public void spin() {
         double pivot = 0;
-        pivot = gamepad1.right_stick_x;;
+        pivot = gamepad1.right_stick_y;;
         if(pivot < 0) {
-            rightWheel.setPower(1);
-            backRightWheel.setPower(1);
-            leftWheel.setPower(-1);
-            backLeftWheel.setPower(-1);
+            rightWheel.setPower(-pivot);
+            backRightWheel.setPower(-pivot);
+            leftWheel.setPower(pivot);
+            backLeftWheel.setPower(pivot);
         }
         if(pivot > 0) {
-            rightWheel.setPower(-1);
-            backRightWheel.setPower(-1);
-            leftWheel.setPower(1);
-            backLeftWheel.setPower(1);
+            rightWheel.setPower(-pivot);
+            backRightWheel.setPower(-pivot);
+            leftWheel.setPower(pivot);
+            backLeftWheel.setPower(pivot);
         }
     }
+
 
     public void moveDriveTrain() {
         double vertical = 0; //Moves forwards and backwards
         double horizontal = 0; //Move side-to-side
-        double pivot = 0;
+        double peevot = 0;
+
         vertical = -gamepad1.left_stick_y;
         horizontal = gamepad1.left_stick_x;
+        peevot = gamepad1.right_stick_x;
 
-        rightWheel.setPower(pivot + (-vertical + horizontal));
-        backRightWheel.setPower(pivot + (-vertical - horizontal));
-        leftWheel.setPower(pivot + (-vertical - horizontal));
-        backLeftWheel.setPower(pivot + (-vertical + horizontal));
+        rightWheel.setPower(peevot + (-vertical + horizontal));
+        backRightWheel.setPower(peevot + (-vertical - horizontal));
+        leftWheel.setPower(peevot + (-vertical - horizontal));
+        backLeftWheel.setPower(peevot + (-vertical + horizontal));
 
         spin();
     }
