@@ -27,11 +27,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     public void servoSpin() {
-        if(gamepad1.right_trigger > 1) {
-            intake.setPower(gamepad1.right_trigger);
+        float forwardsSpin  = gamepad1.right_trigger;
+        float backwardsSpin = gamepad1.left_trigger;
+        if(forwardsSpin > 0) {
+            intake.setPower(forwardsSpin);
         }
-        if(gamepad1.left_trigger > 1) {
-            intake.setPower(gamepad1.left_trigger);
+        if(backwardsSpin > 0) {
+            intake.setPower(-backwardsSpin);
         }
     }
 
@@ -57,7 +59,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         double vertical = 0; //Moves forwards and backwards
         double horizontal = 0; //Move side-to-side
         double peevot = 0;
-        boolean intake = false;
+
         vertical = -gamepad1.left_stick_y;
         horizontal = gamepad1.left_stick_x;
         peevot = gamepad1.right_stick_x;
@@ -65,7 +67,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(peevot + (-vertical - horizontal));
         leftWheel.setPower(peevot + (-vertical - horizontal));
         backLeftWheel.setPower(peevot + (-vertical + horizontal));
-        inteeke = gamepad1.right_bumper;
 
         spin();
     }
@@ -78,7 +79,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        armMotor = hardwareMap.dcMotor.get("expansion_motor");
+        intake = hardwareMap.crservo.get("expansion_servo");
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
@@ -109,7 +110,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void loop() {
         moveDriveTrain();
-        armMotor.setPower(0.1);
+        servoSpin();
 
     }
     @Override
@@ -137,8 +138,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //    }
 
     public void intakeFunc(){
+        boolean inteeke;
+        inteeke = gamepad1.right_bumper;
         while(inteeke == true){
-            intake.setPower(1)
+            intake.setPower(1);
         }
     }
     public void diagonalLeft() {
