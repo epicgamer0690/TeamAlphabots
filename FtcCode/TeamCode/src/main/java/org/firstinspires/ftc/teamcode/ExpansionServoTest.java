@@ -54,6 +54,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void start() {
         expansionMotor.setPower(0.4);
+        servo.setPower(1);
 
     }
 

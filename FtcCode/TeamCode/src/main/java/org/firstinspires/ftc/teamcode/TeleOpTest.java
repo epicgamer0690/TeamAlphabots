@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -18,7 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
-    Servo intake;
+    CRServo intake;
     double drivePower = 0.5;
     int rotation = 1000; //1 rotation = 360
 
@@ -26,7 +27,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     public void servoSpin() {
-
+        if(gamepad1.right_trigger > 1) {
+            intake.setPower(gamepad1.right_trigger);
+        }
+        if(gamepad1.left_trigger > 1) {
+            intake.setPower(gamepad1.left_trigger);
+        }
     }
 
     public void spin() {
@@ -71,6 +77,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+        armMotor = hardwareMap.dcMotor.get("expansion_motor");
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
@@ -101,17 +108,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void loop() {
         moveDriveTrain();
-        if(gamepad1.cross) {
-            armMotor.setTargetPosition(20);
-            armMotor.setPower(0.1);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        }
-        if(gamepad1.circle) {
-            armMotor.setTargetPosition(-20);
-            armMotor.setPower(0.1);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
+        armMotor.setPower(0.1);
 
     }
     @Override
