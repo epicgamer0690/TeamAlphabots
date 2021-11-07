@@ -144,6 +144,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             intake.setPower(1);
         }
     }
+    public void outakeFunc(){
+        boolean outeeke;
+        outeeke = gamepad1.left_bumper;
+        while(outeeke == true){
+            intake.setPower(-1)
+        }
+    }
     public void diagonalLeft() {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
