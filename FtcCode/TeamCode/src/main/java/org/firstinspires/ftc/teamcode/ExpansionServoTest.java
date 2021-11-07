@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="TeleOpTest", group="Training")
-    public class TeleOpTest extends OpMode {
+@Autonomous(name="ExpansionServoTest", group="Training")
+    public class ExpansionServoTest extends OpMode {
 
 
 
@@ -17,53 +15,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    DcMotor armMotor;
-    Servo intake;
+    DcMotor expansionMotor;
+    CRServo servo;
     double drivePower = 0.5;
-    int rotation = 1000; //1 rotation = 360
+     //1 rotation = 360
+
+
+
+
 
     private ElapsedTime runtime= new ElapsedTime();
-
-
-    public void servoSpin() {
-
-    }
-
-    public void spin() {
-        double pivot = 0;
-        pivot = gamepad1.right_stick_y;;
-        if(pivot < 0) {
-            rightWheel.setPower(-pivot);
-            backRightWheel.setPower(-pivot);
-            leftWheel.setPower(pivot);
-            backLeftWheel.setPower(pivot);
-        }
-        if(pivot > 0) {
-            rightWheel.setPower(-pivot);
-            backRightWheel.setPower(-pivot);
-            leftWheel.setPower(pivot);
-            backLeftWheel.setPower(pivot);
-        }
-    }
-
-
-    public void moveDriveTrain() {
-        double vertical = 0; //Moves forwards and backwards
-        double horizontal = 0; //Move side-to-side
-        double peevot = 0;
-
-        vertical = -gamepad1.left_stick_y;
-        horizontal = gamepad1.left_stick_x;
-        peevot = gamepad1.right_stick_x;
-        rightWheel.setPower(peevot + (-vertical + horizontal));
-        backRightWheel.setPower(peevot + (-vertical - horizontal));
-        leftWheel.setPower(peevot + (-vertical - horizontal));
-        backLeftWheel.setPower(peevot + (-vertical + horizontal));
-
-        spin();
-    }
-
-
 
     @Override
     public void init() {
@@ -71,10 +32,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-
-        rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
-        backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
-
+        servo = hardwareMap.crservo.get("expansion_servo");
+        expansionMotor = hardwareMap.dcMotor.get("expansion_motor");
     }
 
     public void Sleep(int milliseconds) {
@@ -91,27 +50,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+
     @Override
     public void start() {
-
-
+        expansionMotor.setPower(0.4);
 
     }
 
     @Override
     public void loop() {
-        moveDriveTrain();
-        if(gamepad1.cross) {
-            armMotor.setTargetPosition(20);
-            armMotor.setPower(0.1);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        }
-        if(gamepad1.circle) {
-            armMotor.setTargetPosition(-20);
-            armMotor.setPower(0.1);
-            armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
 
     }
     @Override
@@ -127,19 +74,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-
-    //@Override
-    //public void loop() {
-    //    leftWheel.setPower(drivePower);
-    //    rightWheel.setPower(drivePower);
-    //    backRightWheel.setPower(drivePower);
-    //    backLeftWheel.setPower(drivePower);
-
-
-//    }
-
-
-    public void diagonalLeft() {
+    public void diagonalLeft(int rotation) {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
         rightWheel.setDirection(DcMotor.Direction.FORWARD);
@@ -163,7 +98,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     }
 
-    public void backwardsDiagonalLeft() {
+    public void backwardsDiagonalLeft(int rotation) {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.FORWARD);
         rightWheel.setDirection(DcMotor.Direction.REVERSE);
@@ -185,7 +120,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     }
 
-    public void diagonalRight() {
+    public void diagonalRight(int rotation) {
         /*
         backRightWheel.setDirection(DcMotor.Direction.FORWARD);
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
@@ -205,7 +140,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(drivePower);
     }
 
-    public void right() {
+    public void horizontalRight(int rotation) {
 
         leftWheel.setTargetPosition(-rotation);
         rightWheel.setTargetPosition(-rotation);
@@ -223,7 +158,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(drivePower);
     }
 
-    public void left() {
+    public void horizontalLeft(int rotation) {
 
         leftWheel.setTargetPosition(rotation);
         rightWheel.setTargetPosition(rotation);
@@ -241,22 +176,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(-drivePower);
     }
 
-    public void backwardsDiagonalRight() {
+    public void backwardsDiagonalRight(int rotation) {
 
-        leftWheel.setTargetPosition(-rotation);
-        backRightWheel.setTargetPosition(rotation);
+        leftWheel.setTargetPosition(rotation);
+        backRightWheel.setTargetPosition(-rotation);
 
         leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftWheel.setPower(-drivePower);
-        backRightWheel.setPower(drivePower);
+        leftWheel.setPower(drivePower);
+        backRightWheel.setPower(-drivePower);
 
     }
 
 
 
-    public void forward() {
+    public void forward(int rotation) {
 
 
         leftWheel.setTargetPosition(-rotation);
@@ -274,21 +209,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backLeftWheel.setPower(-drivePower);
         backRightWheel.setPower(drivePower);
 
-        leftWheel.setTargetPosition(-300);
-        rightWheel.setTargetPosition(300);
-        backLeftWheel.setTargetPosition(-300);
-        backRightWheel.setTargetPosition(300);
-
-        leftWheel.setPower(-0.2);
-        rightWheel.setPower(0.2);
-        backLeftWheel.setPower(-0.2);
-        backRightWheel.setPower(0.2);
 
 
 
     }
 
-    public void backward() {
+    public void backward(int rotation) {
 
 
         leftWheel.setTargetPosition(rotation);

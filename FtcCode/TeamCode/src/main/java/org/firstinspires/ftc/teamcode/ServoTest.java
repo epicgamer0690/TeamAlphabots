@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    Servo servo;
+    CRServo servo;
     double drivePower = 0.5;
      //1 rotation = 360
 
@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        servo = hardwareMap.servo.get("front_servo");
+        servo = hardwareMap.crservo.get("front_servo");
     }
 
     public void Sleep(int milliseconds) {
@@ -54,12 +54,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Override
     public void start() {
-        servo.setPosition(360);
     }
 
     @Override
     public void loop() {
-
+        servo.setPower(1);
     }
     @Override
     public void stop() {

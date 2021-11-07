@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
@@ -29,9 +30,19 @@ import java.util.Locale;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    ColorSensor color;
+    ColorSensor sensorColor;
     double drivePower = 0.5;
      //1 rotation = 360
+
+    float hsvValues[] = {0F, 0F, 0F};
+    final float values[] = hsvValues;
+    final double SCALE_FACTOR = 255;
+    int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
+
+
+
 
 
 
@@ -45,8 +56,7 @@ import java.util.Locale;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        color = hardwareMap.get(ColorSensor.class, "color_sensor");
-        color.enableLed(true);
+        sensorColor = hardwareMap.get(ColorSensor.class, "color_sensor");
 
 
     }
@@ -95,16 +105,24 @@ import java.util.Locale;
     @Override
     public void loop() {
 
-        telemetry.addData("Red", color.red());
-        telemetry.addData("Green", color.green());
-        telemetry.addData("Blue", color.blue());
+        telemetry.addData("Red", sensorColor.red());
+        telemetry.addData("Green", sensorColor.green());
+        telemetry.addData("Blue", sensorColor.blue());
 
-        if(((2 * color.blue()) < color.red()) && (2 * color.blue() < color.green())) {
-            telemetry.addData("Detected Yellow ", true );
-        } else {
-            telemetry.addData("Detected Yellow ", false);
-        }
-        telemetry.update();
+        Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
+                (int) (sensorColor.green() * SCALE_FACTOR),
+                (int) (sensorColor.blue() * SCALE_FACTOR),
+                hsvValues);
+
+
+        telemetry.addData("Alpha", sensorColor.alpha());
+        telemetry.addData("Red  ", sensorColor.red());
+        telemetry.addData("Green", sensorColor.green());
+        telemetry.addData("Blue ", sensorColor.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+
+
+
     }
     @Override
     public void stop() {
