@@ -57,7 +57,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         double vertical = 0; //Moves forwards and backwards
         double horizontal = 0; //Move side-to-side
         double peevot = 0;
-
+        boolean intake = false;
         vertical = -gamepad1.left_stick_y;
         horizontal = gamepad1.left_stick_x;
         peevot = gamepad1.right_stick_x;
@@ -65,6 +65,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(peevot + (-vertical - horizontal));
         leftWheel.setPower(peevot + (-vertical - horizontal));
         backLeftWheel.setPower(peevot + (-vertical + horizontal));
+        inteeke = gamepad1.right_bumper;
 
         spin();
     }
@@ -135,7 +136,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //    }
 
-
+    public void intakeFunc(){
+        while(inteeke == true){
+            intake.setPower(1)
+        }
+    }
     public void diagonalLeft() {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
