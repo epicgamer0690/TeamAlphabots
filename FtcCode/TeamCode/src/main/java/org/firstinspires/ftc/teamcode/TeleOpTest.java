@@ -139,6 +139,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             carouselMotor.setPower(0.5);
         }
         else{
+            carouselMotor.setPower(0);
 
         }
     }

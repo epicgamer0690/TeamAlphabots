@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import javax.tools.ForwardingFileObject;
 
-@TeleOp(name="RoboticArm", group="Training")
+@Autonomous(name="RoboticArm", group="Training")
 public class RoboticArm extends OpMode {
 
 
@@ -40,10 +40,9 @@ public class RoboticArm extends OpMode {
     public void init() {
         leftWheel = hardwareMap.dcMotor.get("left_wheel");
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
-        armMotor = hardwareMap.get(DcMotor.class, "robot_arm");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
 
 
     }
@@ -64,15 +63,19 @@ public class RoboticArm extends OpMode {
 
     @Override
     public void start() {
-
+        runtime.startTime();
+        while(runtime.seconds() < 6) {
+            armMotor.setPower(0.5);
+            Sleep(3000);
+        }
+        while(r)
 
 
     }
 
     @Override
     public void loop() {
-        armMotor.setPower(0.5);
-        armMotor.setPower(-0.5);
+
     }
     @Override
     public void stop() {
