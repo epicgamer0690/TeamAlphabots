@@ -63,13 +63,14 @@ public class RoboticArm extends OpMode {
 
     @Override
     public void start() {
-        runtime.startTime();
-        while(runtime.seconds() < 6) {
-            armMotor.setPower(0.5);
-            Sleep(3000);
-        }
-        while(r)
+        shippingHubLevel(65);
+        resetEncoders();
 
+        shippingHubLevel(125);
+        resetEncoders();
+
+        shippingHubLevel(195);
+        resetEncoders();
 
     }
 
@@ -88,7 +89,14 @@ public class RoboticArm extends OpMode {
     }
 
 
-
+    public void shippingHubLevel(int rotation) {
+        armMotor.setTargetPosition(rotation);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
+        Sleep(1000);
+        armMotor.setTargetPosition(-rotation);
+        armMotor.setPower(0.04);
+    }
 
     public void diagonalLeft(int rotation) {
         /*
