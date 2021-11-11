@@ -19,23 +19,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
-    CRServo intake;
+    CRServo intakeServo;
     double drivePower = 0.5;
     int rotation = 1000; //1 rotation = 360
 
     private ElapsedTime runtime= new ElapsedTime();
 
 
-    public void servoSpin() {
-        float forwardsSpin  = gamepad1.right_trigger;
-        float backwardsSpin = gamepad1.left_trigger;
-        if(forwardsSpin > 0) {
-            intake.setPower(forwardsSpin);
-        }
-        if(backwardsSpin > 0) {
-            intake.setPower(-backwardsSpin);
-        }
-    }
+
 
     public void spin() {
         double pivot = 0;
@@ -79,7 +70,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        intake = hardwareMap.crservo.get("expansion_servo");
+        intakeServo = hardwareMap.crservo.get("expansion_servo");
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
@@ -110,7 +101,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void loop() {
         moveDriveTrain();
-        servoSpin();
+        intakeFunc();
+        outakeFunc();
 
     }
     @Override
@@ -137,18 +129,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 //    }
 
-    public void intakeFunc(){
+    public void intakeFunc() {
         boolean inteeke;
         inteeke = gamepad1.right_bumper;
-        while(inteeke == true){
-            intake.setPower(1);
+        if (inteeke == true) {
+            intakeServo.setPower(1);
+        }
+        else{
+            intakeServo.setPower(0);
         }
     }
+
     public void outakeFunc(){
         boolean outeeke;
         outeeke = gamepad1.left_bumper;
-        while(outeeke == true){
-            intake.setPower(-1)
+        if(outeeke == true) {
+            intakeServo.setPower(-1);
+        }
+        else{
+            intakeServo.setPower(0);
         }
     }
     public void diagonalLeft() {
