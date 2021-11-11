@@ -83,7 +83,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         //sleep(milliseconds 1000);
 
          */
-
         rightWheel.setTargetPosition(rotation);
         backLeftWheel.setTargetPosition(-rotation);
 

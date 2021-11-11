@@ -21,6 +21,7 @@ public class RoboticArm extends OpMode {
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
+    DcMotor carouselMotor;
     double drivePower = 0.5;
     int rotation = 1000; //1 rotation = 360
 
@@ -31,32 +32,7 @@ public class RoboticArm extends OpMode {
 
     private ElapsedTime runtime= new ElapsedTime();
 
-    public void armSpin() {
-        boolean upArm; //Moves arm up
-        boolean downArm; //Move arm down
-
-        upArm = gamepad1.dpad_up;
-        if( upArm == true){
-            armMotor.setPower(1);
-        }
-        else if(upArm == true){
-
-            armMotor.setPower(0);
-        }
-
-        downArm = gamepad1.dpad_down;
-        if( downArm == true){
-            armMotor.setPower(1);
-        }
-        else if(downArm == true){
-
-            armMotor.setPower(0);
-        }
-
-        if(downArm && upArm == true){
-            armMotor.setPower(0);
-        }
-
+    public void carouselFunc() {
 
     }
 
@@ -67,6 +43,7 @@ public class RoboticArm extends OpMode {
         armMotor = hardwareMap.get(DcMotor.class, "robot_arm");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
 
 
     }

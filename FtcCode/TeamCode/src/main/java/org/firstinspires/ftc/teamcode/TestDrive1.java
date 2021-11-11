@@ -52,12 +52,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-        backLeftWheel.setPower(1);
-        Sleep(1000);
-        backRightWheel.setPower(1);
-
-
-
     }
 
     @Override

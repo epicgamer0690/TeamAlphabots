@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor backRightWheel;
     DcMotor armMotor;
     CRServo intakeServo;
+    DcMotor carouselMotor;
     double drivePower = 0.5;
     int rotation = 1000; //1 rotation = 360
 
@@ -71,6 +72,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
+        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
@@ -103,6 +105,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         moveDriveTrain();
         intakeFunc();
         outakeFunc();
+        carouselFunc();
 
     }
     @Override
@@ -128,6 +131,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 //    }
+    public void carouselFunc(){
+        boolean carouselTurn;
+        boolean carouselStop;
+        carouselTurn = gamepad1.cross;
+        if(carouselTurn == true){
+            carouselMotor.setPower(0.5);
+        }
+        else{
+
+        }
+    }
 
     public void intakeFunc() {
         boolean inteeke;
