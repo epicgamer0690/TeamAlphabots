@@ -133,14 +133,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //    }
     public void carouselFunc(){
         boolean carouselTurn;
-        boolean carouselStop;
+
         carouselTurn = gamepad1.cross;
         if(carouselTurn == true){
             carouselMotor.setPower(0.5);
         }
         else{
             carouselMotor.setPower(0);
-
+            carouselMotor.setPower(0.5)
         }
     }
 

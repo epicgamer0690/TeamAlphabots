@@ -71,6 +71,8 @@ public class RoboticArm extends OpMode {
         resetEncoders();
 
         shippingHubLevel(195);
+
+        shippingHubLevel(230);
         resetEncoders();
 
     }
@@ -98,7 +100,7 @@ public class RoboticArm extends OpMode {
         armMotor.setTargetPosition(-rotation);
         armMotor.setPower(0.04);
     }
-
+    public void
     public void diagonalLeft(int rotation) {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);

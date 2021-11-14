@@ -58,7 +58,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Override
     public void loop() {
-        servo.setPower(1);
+        servo.setPower(0);
     }
     @Override
     public void stop() {

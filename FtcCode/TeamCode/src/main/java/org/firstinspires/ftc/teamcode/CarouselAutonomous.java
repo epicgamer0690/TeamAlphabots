@@ -2,27 +2,17 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import javax.tools.ForwardingFileObject;
 
-import java.util.Locale;
-import edu.wpi.first.wpilibj.util.Color;
-@Autonomous(name="ColorSensorTest", group="Training")
-    public class ColorSensorTest extends OpMode {
+@Autonomous(name="CarouselAutonomous", group="Training")
+public class CarouselAutonomous extends OpMode {
 
 
 
@@ -30,14 +20,10 @@ import edu.wpi.first.wpilibj.util.Color;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    ColorSensor sensorColor;
+    DcMotor armMotor;
+    DcMotor carouselMotor;
     double drivePower = 0.5;
-     //1 rotation = 360
-
-
-
-
-
+    int rotation = 1000; //1 rotation = 360
 
 
 
@@ -50,9 +36,9 @@ import edu.wpi.first.wpilibj.util.Color;
     public void init() {
         leftWheel = hardwareMap.dcMotor.get("left_wheel");
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        sensorColor = hardwareMap.get(ColorSensor.class, "color_sensor");
 
 
     }
@@ -73,39 +59,19 @@ import edu.wpi.first.wpilibj.util.Color;
 
     @Override
     public void start() {
-
-
-
-        /*
-        Sleep(1000);
+        shippingHubLevel(65);
         resetEncoders();
 
-        horizontalRight(1000);
-        Sleep(1000);
+        shippingHubLevel(125);
         resetEncoders();
 
-
-        backward(1000);
-        Sleep(3000);
+        shippingHubLevel(195);
         resetEncoders();
-
-        horizontalLeft(1000);
-        Sleep(1000);
-        resetEncoders();
-
-         */
-
 
     }
 
     @Override
     public void loop() {
-
-        telemetry.addData("Red", sensorColor.red());
-        telemetry.addData("Green", sensorColor.green());
-        telemetry.addData("Blue", sensorColor.blue());
-        telemetry.addData("Color", getColor());
-
 
     }
     @Override
@@ -119,8 +85,30 @@ import edu.wpi.first.wpilibj.util.Color;
     }
 
 
+    public void shippingHubLevel(int rotation) {
+        armMotor.setTargetPosition(rotation);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
+        Sleep(1000);
+        armMotor.setTargetPosition(-rotation);
+        armMotor.setPower(0.04);
+    }
+    public void carouselFuncAuto() {
 
+    }
 
+    public void carouselFunc(){
+        boolean carouselTurn;
+
+        carouselTurn = gamepad1.cross;
+        if(carouselTurn == true){
+            carouselMotor.setPower(0.5);
+        }
+        else{
+            carouselMotor.setPower(0);
+            carouselMotor.setPower(0.5)
+        }
+    }
     public void diagonalLeft(int rotation) {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
