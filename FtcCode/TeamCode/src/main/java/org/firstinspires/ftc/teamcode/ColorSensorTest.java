@@ -34,11 +34,7 @@ import java.util.Locale;
     double drivePower = 0.5;
      //1 rotation = 360
 
-    float hsvValues[] = {0F, 0F, 0F};
-    final float values[] = hsvValues;
-    final double SCALE_FACTOR = 255;
-    int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-    final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
 
 
 
@@ -108,19 +104,6 @@ import java.util.Locale;
         telemetry.addData("Red", sensorColor.red());
         telemetry.addData("Green", sensorColor.green());
         telemetry.addData("Blue", sensorColor.blue());
-
-        Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
-                (int) (sensorColor.green() * SCALE_FACTOR),
-                (int) (sensorColor.blue() * SCALE_FACTOR),
-                hsvValues);
-
-
-        telemetry.addData("Alpha", sensorColor.alpha());
-        telemetry.addData("Red  ", sensorColor.red());
-        telemetry.addData("Green", sensorColor.green());
-        telemetry.addData("Blue ", sensorColor.blue());
-        telemetry.addData("Hue", hsvValues[0]);
-
 
 
     }
