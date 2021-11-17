@@ -131,6 +131,35 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 //    }
+    public void setButtons(){
+        if(gamepad1.dpad_left == true){
+            shippingHubLevel(65);
+        }
+        if(gamepad1.dpad_right == true){
+            shippingHubLevel(125 );
+        }
+        if(gamepad1.dpad_up == true){
+            shippingHubLevel(195);
+        }
+        if(gamepad1.triangle == true){
+            shippingHubLevel(195);
+        }
+        if(gamepad1.circl == true){
+            shippingHubLevel(125);
+        }
+        if(gamepad1.square == true){
+            shippingHubLevel(65);
+        }
+    }
+    public void shippingHubLevel(int rotation) {
+        armMotor.setTargetPosition(rotation);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
+    }
+    public void shippingHubLevelReturn(int rotation){
+        armMotor.setTargetPosition(-rotation);
+        armMotor.setPower(0.04);
+    }
     public void carouselFunc(){
         boolean carouselTurn;
 
@@ -140,7 +169,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         }
         else{
             carouselMotor.setPower(0);
-            carouselMotor.setPower(0.5)
         }
     }
 

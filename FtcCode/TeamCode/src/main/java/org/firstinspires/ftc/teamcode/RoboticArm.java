@@ -64,6 +64,7 @@ public class RoboticArm extends OpMode {
 
     @Override
     public void start() {
+
         shippingHubLevel(65);
         resetEncoders();
 
