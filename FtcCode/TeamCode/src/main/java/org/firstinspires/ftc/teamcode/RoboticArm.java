@@ -101,7 +101,7 @@ public class RoboticArm extends OpMode {
         armMotor.setTargetPosition(-rotation);
         armMotor.setPower(0.04);
     }
-    public void
+
     public void diagonalLeft(int rotation) {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);

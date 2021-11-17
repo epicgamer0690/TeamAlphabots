@@ -106,7 +106,7 @@ public class CarouselAutonomous extends OpMode {
         }
         else{
             carouselMotor.setPower(0);
-            carouselMotor.setPower(0.5)
+            carouselMotor.setPower(0.5);
         }
     }
     public void diagonalLeft(int rotation) {

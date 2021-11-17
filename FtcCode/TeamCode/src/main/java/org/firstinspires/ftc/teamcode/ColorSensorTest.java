@@ -18,9 +18,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
+import java.lang.Object;
 import java.util.Locale;
-import edu.wpi.first.wpilibj.util.Color;
 @Autonomous(name="ColorSensorTest", group="Training")
     public class ColorSensorTest extends OpMode {
 
@@ -30,7 +29,7 @@ import edu.wpi.first.wpilibj.util.Color;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    ColorSensor sensorColor;
+    RevColorSensorV3 sensorColor;
     double drivePower = 0.5;
      //1 rotation = 360
 
@@ -52,10 +51,14 @@ import edu.wpi.first.wpilibj.util.Color;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        sensorColor = hardwareMap.get(ColorSensor.class, "color_sensor");
+        sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+        sensorColor.enableLed(true);
+
 
 
     }
+
+
 
     public void Sleep(int milliseconds) {
         try {
@@ -100,11 +103,10 @@ import edu.wpi.first.wpilibj.util.Color;
 
     @Override
     public void loop() {
-
+        telemetry.addData("Light", sensorColor.getLightDetected());
         telemetry.addData("Red", sensorColor.red());
         telemetry.addData("Green", sensorColor.green());
         telemetry.addData("Blue", sensorColor.blue());
-        telemetry.addData("Color", getColor());
 
 
     }

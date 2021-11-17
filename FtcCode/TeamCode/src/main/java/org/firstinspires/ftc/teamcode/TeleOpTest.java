@@ -106,6 +106,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         intakeFunc();
         outakeFunc();
         carouselFunc();
+        setButtons();
 
     }
     @Override
@@ -142,13 +143,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             shippingHubLevel(195);
         }
         if(gamepad1.triangle == true){
-            shippingHubLevel(195);
+            shippingHubLevelReturn(195);
         }
         if(gamepad1.circle == true){
-            shippingHubLevel(125);
+            shippingHubLevelReturn(125);
         }
         if(gamepad1.square == true){
-            shippingHubLevel(65);
+            shippingHubLevelReturn(65);
         }
     }
     public void shippingHubLevel(int rotation) {
@@ -193,6 +194,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             intakeServo.setPower(0);
         }
     }
+
+
     public void diagonalLeft() {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
