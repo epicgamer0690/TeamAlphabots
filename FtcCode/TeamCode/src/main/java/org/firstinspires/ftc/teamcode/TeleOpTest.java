@@ -175,7 +175,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     public void intakeFunc() {
         boolean inteeke;
-        inteeke = gamepad1.right_bumper;
+        inteeke = gamepad1.left_bumper;
         if (inteeke == true) {
             intakeServo.setPower(1);
         }
@@ -186,12 +186,36 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     public void outakeFunc(){
         boolean outeeke;
-        outeeke = gamepad1.left_bumper;
+        outeeke = gamepad1.right_bumper;
         if(outeeke == true) {
             intakeServo.setPower(-1);
         }
         else{
             intakeServo.setPower(0);
+        }
+    }
+    public void accelerate(){
+        if(gamepad2.right_bumper == true){
+            drivePower = drivePower + 0.25
+        }
+        else{
+            drivePower = 0.5
+        }
+    }
+    public void deccelerate(){
+        if(gamepad2.left_bumper == true){
+            drivePower = drivePower - 0.25
+        }
+        else{
+            drivePower = 0.5
+        }
+    }
+    public void stopMotors(){
+        if(gamepad2.square == true){
+            drivePower = 0
+        }
+        else{
+            drivePower = 0.5
         }
     }
 
