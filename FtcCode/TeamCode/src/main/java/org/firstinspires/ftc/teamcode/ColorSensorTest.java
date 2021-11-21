@@ -104,7 +104,11 @@ import java.util.Locale;
     @Override
     public void loop() {
         telemetry.addData("Light", sensorColor.getLightDetected());
+        telemetry.addData("Distance", sensorColor.getDistance(DistanceUnit.CM));
         telemetry.addData("Red", sensorColor.red());
+        telemetry.addData("Raw Optical", sensorColor.rawOptical());
+        telemetry.addData("Raw Light Detected Max", sensorColor.getRawLightDetectedMax());
+        telemetry.addData("Status", sensorColor.status());
         telemetry.addData("Green", sensorColor.green());
         telemetry.addData("Blue", sensorColor.blue());
 

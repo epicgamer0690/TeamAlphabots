@@ -72,6 +72,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
+        armMotor = hardwareMap.dcMotor.get("expansion_motor");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
@@ -105,7 +106,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         moveDriveTrain();
         intakeFunc();
         outakeFunc();
-        carouselFunc();
         setButtons();
 
     }
@@ -151,6 +151,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         if(gamepad1.square == true){
             shippingHubLevelReturn(65);
         }
+        if(gamepad1.cross == true){
+            carouselFunc(7);
+        }
     }
     public void shippingHubLevel(int rotation) {
         armMotor.setTargetPosition(rotation);
@@ -161,16 +164,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         armMotor.setTargetPosition(-rotation);
         armMotor.setPower(0.04);
     }
-    public void carouselFunc(){
-        boolean carouselTurn;
-
-        carouselTurn = gamepad1.cross;
-        if(carouselTurn == true){
+    public void carouselFunc(int rotation){
+            carouselMotor.setTargetPosition(-rotation);
+        carouselMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             carouselMotor.setPower(0.5);
-        }
-        else{
-            carouselMotor.setPower(0);
-        }
     }
 
     public void intakeFunc() {
@@ -196,26 +193,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     }
     public void accelerate(){
         if(gamepad2.right_bumper == true){
-            drivePower = drivePower + 0.25
+            drivePower = drivePower + 0.25;
         }
         else{
-            drivePower = 0.5
+            drivePower = 0.5;
         }
     }
     public void deccelerate(){
         if(gamepad2.left_bumper == true){
-            drivePower = drivePower - 0.25
+            drivePower = drivePower - 0.25;
         }
         else{
-            drivePower = 0.5
+            drivePower = 0.5;
         }
     }
     public void stopMotors(){
         if(gamepad2.square == true){
-            drivePower = 0
+            drivePower = 0;
         }
         else{
-            drivePower = 0.5
+            drivePower = 0.5;
         }
     }
 
