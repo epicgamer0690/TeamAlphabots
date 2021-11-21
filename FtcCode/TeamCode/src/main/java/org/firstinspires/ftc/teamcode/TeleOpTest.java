@@ -71,7 +71,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        intakeServo = hardwareMap.crservo.get("expansion_servo");
+        intakeServo = hardwareMap.crservo.get("intake_servo");
         armMotor = hardwareMap.dcMotor.get("expansion_motor");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
 
