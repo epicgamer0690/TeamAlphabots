@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="TestDrive1", group="Training")
-    public class TestDrive1 extends OpMode {
+@Autonomous(name="FrontLeftWheel", group="Training")
+    public class FrontLeftWheel extends OpMode {
 
 
 
@@ -48,7 +48,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Override
     public void start() {
-
 
 
 

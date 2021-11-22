@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="TestDrive1", group="Training")
-    public class TestDrive1 extends OpMode {
+@Autonomous(name="RearRightWheel", group="Training")
+    public class RearRightWheel extends OpMode {
 
 
 
@@ -56,7 +56,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Override
     public void loop() {
-        leftWheel.setPower(drivePower);
+        backRightWheel.setPower(drivePower);
     }
     @Override
     public void stop() {
