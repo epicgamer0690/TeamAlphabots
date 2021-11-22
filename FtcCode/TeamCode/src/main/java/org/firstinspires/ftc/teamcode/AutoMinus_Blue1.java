@@ -45,8 +45,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Override
     public void start() {
-        //BLUE 1:
-        //Blue 2:
+        //BLUE 1: strafe to barcode (Hor Right). Sense TSE. Forward. Drop cargo based on TSE. Move back to wall. Turn 90 degrees forward. Forward to carousel. Turn carousel. MOVE BACK TO THE BLUE TAPE AREA
+        //BLUE 2: strafe to barcode (Hor Left). Sense TSE. Forward. Drop cargo based on TSE. Move Back
         int rotation = 50;
         armMotor.setTargetPosition(rotation);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
