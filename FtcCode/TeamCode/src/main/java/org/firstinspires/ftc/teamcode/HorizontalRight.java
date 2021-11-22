@@ -27,9 +27,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
     }
     @Override
-    public void loop()  {
-
-        horizontalRight();
+    public void loop(){
 
 
     }
@@ -77,10 +75,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
     }
 
     public void horizontalRight() {
-        backRightWheel.setDirection(DcMotor.Direction.FORWARD);
-        leftWheel.setDirection(DcMotor.Direction.REVERSE);
-        rightWheel.setDirection(DcMotor.Direction.REVERSE);
-        backLeftWheel.setDirection(DcMotor.Direction.FORWARD);
+
 
         leftWheel.setPower(drivePower);
         backRightWheel.setPower(drivePower);

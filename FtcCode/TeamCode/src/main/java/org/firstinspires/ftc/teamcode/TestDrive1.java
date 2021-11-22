@@ -51,12 +51,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-
     }
 
     @Override
     public void loop() {
-        leftWheel.setPower(drivePower);
+
     }
     @Override
     public void stop() {

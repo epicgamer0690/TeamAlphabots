@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="AutoMinus", group="Training")
-    public class AutoMinus extends OpMode {
+    public class AutoMinus_Blue1 extends OpMode {
     DcMotor leftWheel;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    double drivePower = 0.5;
+    DcMotor armMotor;
+    double drivePower = 0.25;
     //1 rotation = 360
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -22,6 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
 
 
     }
@@ -43,14 +45,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     @Override
     public void start() {
-        horizontalRight(10);
+        //BLUE 1:
+        //Blue 2:
+        int rotation = 50;
+        armMotor.setTargetPosition(rotation);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
+        resetEncoders();
+        horizontalRight(5);
+        resetEncoders();
+        horizontalLeft(5);
 
 
     }
 
     @Override
     public void loop() {
-        leftWheel.setPower(drivePower);
+
     }
 
     @Override
@@ -130,9 +141,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     }
 
     public void horizontalRight(int rotation) {
+        backRightWheel.setDirection(DcMotor.Direction.FORWARD);
+        leftWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightWheel.setDirection(DcMotor.Direction.REVERSE);
+        backLeftWheel.setDirection(DcMotor.Direction.FORWARD);
 
-        leftWheel.setTargetPosition(-rotation);
-        rightWheel.setTargetPosition(-rotation);
+        leftWheel.setTargetPosition(rotation);
+        rightWheel.setTargetPosition(rotation);
         backLeftWheel.setTargetPosition(rotation);
         backRightWheel.setTargetPosition(rotation);
 
@@ -141,8 +156,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftWheel.setPower(-drivePower);
-        rightWheel.setPower(-drivePower);
+        leftWheel.setPower(drivePower);
+        rightWheel.setPower(drivePower);
         backLeftWheel.setPower(drivePower);
         backRightWheel.setPower(drivePower);
     }
