@@ -52,6 +52,13 @@ import java.lang.Thread;
             forward();
         }
         stop();
+        //you cant have a loop inside loop. For this you would need a count
+        //variable and an if statement. Ex:
+        //int count = 0
+        //if(count >= 3){
+        //forward();
+        //count++;
+        //}
 
 
     }

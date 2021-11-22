@@ -191,7 +191,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             intakeServo.setPower(0);
         }
     }
-    public void accelerate(){
+    /*public void accelerate(){
         if(gamepad2.right_bumper == true){
             drivePower = drivePower + 0.25;
         }
@@ -214,7 +214,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         else{
             drivePower = 0.5;
         }
-    }
+    }*/
 
 
     public void diagonalLeft() {
