@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -12,6 +14,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
+    DcMotor carouselMotor;
+    CRServo intakeServo;
+    RevColorSensorV3 colorSensor;
+    String TSEPosition;
     double drivePower = 0.25;
     //1 rotation = 360
 
@@ -24,6 +30,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        intakeServo = hardwareMap.crservo.get("expansion_servo");
+        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
 
 
     }
@@ -36,32 +45,112 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         }
     }
 
+    public void shippingHubLevel(int rotation) {
+        armMotor.setTargetPosition(rotation);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
+    }
+
+    public void shippingHubLevelReturn(int rotation){
+        armMotor.setTargetPosition(-rotation);
+        armMotor.setPower(0.04);
+    }
+
+    public void intakeFunc() {
+        intakeServo.setPower(1);
+    }
+
+    public void outakeFunc(){
+        runtime.reset();
+        runtime.startTime();
+        if(runtime.seconds() < 3 ) {
+            intakeServo.setPower(-1);
+        }
+
+    }
+
+    public void carouselFunc(double power){
+        carouselMotor.setTargetPosition(6);
+        carouselMotor.setPower(1);
+    }
+
     public void resetEncoders() {
         leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode((DcMotor.RunMode.STOP_AND_RESET_ENCODER));
+        carouselMotor.setMode((DcMotor.RunMode.STOP_AND_RESET_ENCODER));
+
+    }
+    public int detectShippingElement() {
+        if(colorSensor.green() > colorSensor.red() && colorSensor.green() > colorSensor.blue()) {
+            return 3;
+        } else {
+            forward(3);
+            if(colorSensor.green() > colorSensor.red() && colorSensor.green() > colorSensor.blue()) {
+                return 2;
+
+            } else {
+                return 1;
+                }
+            }
+        }
+
+    public void moveArm() {
+        if(detectShippingElement() == 1) {
+            shippingHubLevel(65);
+        }
+        if(detectShippingElement() == 2) {
+            shippingHubLevel(125);
+        }
+        if(detectShippingElement() == 3) {
+            shippingHubLevel(195);
+        }
+    }
+
+    public void pivotRight(int rotation) {
+        rightWheel.setTargetPosition(-rotation);
+        backLeftWheel.setTargetPosition(rotation);
+        backRightWheel.setTargetPosition(-rotation);
+
+        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        rightWheel.setPower(-drivePower);
+        backLeftWheel.setPower(drivePower);
+        backRightWheel.setPower(-drivePower);
+
+
+
+
+
     }
 
     @Override
     public void start() {
         //BLUE 1: strafe to barcode (Hor Right). Sense TSE. Forward. Drop cargo based on TSE. Move back to wall. Turn 90 degrees forward. Forward to carousel. Turn carousel. MOVE BACK TO THE BLUE TAPE AREA
-        //BLUE 2: strafe to barcode (Hor Left). Sense TSE. Forward. Drop cargo based on TSE. Move Back
-        int rotation = 50;
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
+        //BLUE 2: strafe to barcode (Hor Left). Sense TSE. Forward. Drop cargo based on TSE. Move Back;
+        /*
         resetEncoders();
         horizontalRight(5);
         resetEncoders();
-        horizontalLeft(5);
+        moveArm();
+        forward(5);
+        outakeFunc();
+        backward(10);
+
+         */
+
+        pivotRight(5);
+
 
 
     }
 
     @Override
     public void loop() {
-
     }
 
     @Override
@@ -73,6 +162,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     }
+
 
 
     public void diagonalLeft(int rotation) {
