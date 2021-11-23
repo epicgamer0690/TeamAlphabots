@@ -1,16 +1,15 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 
-@TeleOp(name="TeleOpTest", group="Training")
-    public class TeleOpTest extends OpMode {
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+@Autonomous(name="ColorSensorTest", group="Training")
+    public class ColorSensorTest extends OpMode {
 
 
 
@@ -18,54 +17,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    DcMotor armMotor;
-    CRServo intakeServo;
-    DcMotor carouselMotor;
+    RevColorSensorV3 sensorColor;
     double drivePower = 0.5;
-    int rotation = 1000; //1 rotation = 360
+     //1 rotation = 360
+
+
+
+
+
+
+
+
+
+
 
     private ElapsedTime runtime= new ElapsedTime();
-
-
-
-
-    public void spin() {
-        double pivot = 0;
-        pivot = gamepad1.right_stick_y;;
-        if(pivot < 0) {
-            rightWheel.setPower(-pivot);
-            backRightWheel.setPower(-pivot);
-            leftWheel.setPower(pivot);
-            backLeftWheel.setPower(pivot);
-        }
-        if(pivot > 0) {
-            rightWheel.setPower(-pivot);
-            backRightWheel.setPower(-pivot);
-            leftWheel.setPower(pivot);
-            backLeftWheel.setPower(pivot);
-        }
-    }
-
-
-
-
-    public void moveDriveTrain() {
-        double vertical = 0; //Moves forwards and backwards
-        double horizontal = 0; //Move side-to-side
-        double peevot = 0;
-
-        vertical = -gamepad1.left_stick_y;
-        horizontal = gamepad1.left_stick_x;
-        peevot = gamepad1.right_stick_x;
-        rightWheel.setPower(peevot + (-vertical + horizontal));
-        backRightWheel.setPower(peevot + (-vertical - horizontal));
-        leftWheel.setPower(peevot + (-vertical - horizontal));
-        backLeftWheel.setPower(peevot + (-vertical + horizontal));
-
-        spin();
-    }
-
-
 
     @Override
     public void init() {
@@ -73,14 +39,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        intakeServo = hardwareMap.crservo.get("expansion_servo");
-        armMotor = hardwareMap.dcMotor.get("expansion_motor");
-        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+        sensorColor.enableLed(true);
 
-        rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
-        backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
+
 
     }
+
+
 
     public void Sleep(int milliseconds) {
         try {
@@ -101,15 +67,37 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
+        /*
+        Sleep(1000);
+        resetEncoders();
+
+        horizontalRight(1000);
+        Sleep(1000);
+        resetEncoders();
+
+
+        backward(1000);
+        Sleep(3000);
+        resetEncoders();
+
+        horizontalLeft(1000);
+        Sleep(1000);
+        resetEncoders();
+
+         */
+
+
     }
 
     @Override
     public void loop() {
-        moveDriveTrain();
-        intakeFunc();
-        outakeFunc();
-        setButtons();
-        carouselFunc(0.3);
+
+        telemetry.addData("Normalized Color", sensorColor.getNormalizedColors());
+        telemetry.addData("Distance", sensorColor.getDistance(DistanceUnit.CM));
+        telemetry.addData("Red", sensorColor.red());
+        telemetry.addData("Green", sensorColor.green());
+        telemetry.addData("Blue", sensorColor.blue());
+
 
     }
     @Override
@@ -125,108 +113,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-
-    //@Override
-    //public void loop() {
-    //    leftWheel.setPower(drivePower);
-    //    rightWheel.setPower(drivePower);
-    //    backRightWheel.setPower(drivePower);
-    //    backLeftWheel.setPower(drivePower);
-
-
-//    }
-    public void setButtons(){
-        if(gamepad1.dpad_left == true){
-            shippingHubLevel(65);
-        }
-        if(gamepad1.dpad_right == true){
-            shippingHubLevel(125 );
-        }
-        if(gamepad1.dpad_up == true){
-            shippingHubLevel(195);
-        }
-        if(gamepad1.triangle == true){
-            shippingHubLevelReturn(195);
-        }
-        if(gamepad1.circle == true){
-            shippingHubLevelReturn(125);
-        }
-        if(gamepad1.square == true){
-            shippingHubLevelReturn(65);
-        }
-
-    }
-    public void shippingHubLevel(int rotation) {
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
-    }
-    public void shippingHubLevelReturn(int rotation){
-        armMotor.setTargetPosition(-rotation);
-        armMotor.setPower(0.04);
-    }
-    public void carouselFunc(double power){
-        if(gamepad1.cross == true) {
-            carouselMotor.setPower(power);
-
-        } else {
-            carouselMotor.setPower(0);
-        }
-    }
-
-    public void intakeFunc() {
-
-        boolean inteeke = gamepad1.left_bumper;
-        if (inteeke == true) {
-            intakeServo.setPower(1);
-        }
-        else{
-            intakeServo.setPower(0);
-        }
-    }
-
-    public void outakeFunc(){
-        boolean outeeke;
-        outeeke = gamepad1.right_bumper;
-        if(outeeke == true) {
-            intakeServo.setPower(-1);
-        }
-        else{
-            intakeServo.setPower(0);
-        }
-    }
-    /*
-    public void accelerate(){
-        if(gamepad2.right_bumper == true){
-            drivePower = drivePower + 0.25;
-        }
-        else{
-            drivePower = 0.5;
-        }
-    }
-    public void deccelerate(){
-        if(gamepad2.left_bumper == true){
-            drivePower = drivePower - 0.25;
-        }
-        else{
-            drivePower = 0.5;
-        }
-    }
-
-
-    public void stopMotors(){
-        if(gamepad2.square == true){
-            drivePower = 0;
-        }
-        else{
-            drivePower = 0.5;
-        }
-    }
-
-     */
-
-
-    public void diagonalLeft() {
+    public void diagonalLeft(int rotation) {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
         rightWheel.setDirection(DcMotor.Direction.FORWARD);
@@ -250,7 +137,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     }
 
-    public void backwardsDiagonalLeft() {
+    public void backwardsDiagonalLeft(int rotation) {
         /*
         backLeftWheel.setDirection(DcMotor.Direction.FORWARD);
         rightWheel.setDirection(DcMotor.Direction.REVERSE);
@@ -272,7 +159,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     }
 
-    public void diagonalRight() {
+    public void diagonalRight(int rotation) {
         /*
         backRightWheel.setDirection(DcMotor.Direction.FORWARD);
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
@@ -292,7 +179,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(drivePower);
     }
 
-    public void right() {
+    public void horizontalRight(int rotation) {
 
         leftWheel.setTargetPosition(-rotation);
         rightWheel.setTargetPosition(-rotation);
@@ -310,7 +197,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(drivePower);
     }
 
-    public void left() {
+    public void horizontalLeft(int rotation) {
 
         leftWheel.setTargetPosition(rotation);
         rightWheel.setTargetPosition(rotation);
@@ -328,22 +215,22 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(-drivePower);
     }
 
-    public void backwardsDiagonalRight() {
+    public void backwardsDiagonalRight(int rotation) {
 
-        leftWheel.setTargetPosition(-rotation);
-        backRightWheel.setTargetPosition(rotation);
+        leftWheel.setTargetPosition(rotation);
+        backRightWheel.setTargetPosition(-rotation);
 
         leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftWheel.setPower(-drivePower);
-        backRightWheel.setPower(drivePower);
+        leftWheel.setPower(drivePower);
+        backRightWheel.setPower(-drivePower);
 
     }
 
 
 
-    public void forward() {
+    public void forward(int rotation) {
 
 
         leftWheel.setTargetPosition(-rotation);
@@ -361,21 +248,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backLeftWheel.setPower(-drivePower);
         backRightWheel.setPower(drivePower);
 
-        leftWheel.setTargetPosition(-300);
-        rightWheel.setTargetPosition(300);
-        backLeftWheel.setTargetPosition(-300);
-        backRightWheel.setTargetPosition(300);
-
-        leftWheel.setPower(-0.2);
-        rightWheel.setPower(0.2);
-        backLeftWheel.setPower(-0.2);
-        backRightWheel.setPower(0.2);
 
 
 
     }
 
-    public void backward() {
+    public void backward(int rotation) {
 
 
         leftWheel.setTargetPosition(rotation);

@@ -1,27 +1,27 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="RearRightWheel", group="Training")
-    public class RearRightWheel extends OpMode {
-
-
-
+@Autonomous(name="AutoMinus", group="Training")
+    public class AutoMinus_Blue1 extends OpMode {
     DcMotor leftWheel;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    double drivePower = 0.5;
-     //1 rotation = 360
+    DcMotor armMotor;
+    DcMotor carouselMotor;
+    CRServo intakeServo;
+    RevColorSensorV3 colorSensor;
+    String TSEPosition;
+    double drivePower = 0.01;
+    //1 rotation = 360
 
-
-
-
-
-    private ElapsedTime runtime= new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void init() {
@@ -29,35 +29,143 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        intakeServo = hardwareMap.crservo.get("expansion_servo");
+        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+
 
     }
 
-    public void Sleep(int milliseconds) {
+    public void sleep(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
+    public void shippingHubLevel(int rotation) {
+        resetEncoders();
+        armMotor.setTargetPosition(rotation);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(1);
+    }
+
+    public void shippingHubLevelReturn(int rotation){
+        resetEncoders();
+        armMotor.setTargetPosition(-rotation);
+        armMotor.setPower(0.04);
+    }
+
+    public void intakeFunc() {
+        intakeServo.setPower(1);
+    }
+
+    public void outakeFunc(){
+        intakeServo.setPower(-1);
+        sleep(3000);
+        }
+
+
+    public void carouselFunc(double power){
+        carouselMotor.setTargetPosition(6);
+        carouselMotor.setPower(1);
+    }
+
     public void resetEncoders() {
         leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode((DcMotor.RunMode.STOP_AND_RESET_ENCODER));
+        carouselMotor.setMode((DcMotor.RunMode.STOP_AND_RESET_ENCODER));
+
+    }
+    public int detectShippingElement() {
+        int tempVar = 0;
+        if (colorSensor.green() > colorSensor.red() && colorSensor.green() > colorSensor.blue()) {
+            forward(1); //to the next square
+            tempVar = 3;
+        } else if (colorSensor.green() <= colorSensor.red() && colorSensor.green() <= colorSensor.blue()) {
+            forward(1); //to the next square
+            if (colorSensor.green() > colorSensor.red() && colorSensor.green() > colorSensor.blue()) {
+                tempVar = 2;
+            } else {
+                tempVar = 1;
+            }
+
+        }
+        return tempVar;
+    }
+
+    public void moveArm() {
+        if(detectShippingElement() == 1) {
+            shippingHubLevel(65);
+            outakeFunc();
+        }
+        if(detectShippingElement() == 2) {
+            forward(1);
+            shippingHubLevel(125);
+            outakeFunc();
+            backward(1);
+        }
+        if(detectShippingElement() == 3) {
+            forward(2);
+            shippingHubLevel(195);
+            outakeFunc();
+            backward(2);
+        }
+    }
+
+    public void pivotRight(int rotation) {
+        rightWheel.setTargetPosition(-rotation);
+        backLeftWheel.setTargetPosition(rotation);
+        backRightWheel.setTargetPosition(-rotation);
+
+        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        rightWheel.setPower(-drivePower);
+        backLeftWheel.setPower(drivePower);
+        backRightWheel.setPower(-drivePower);
+
+
+
+
+
     }
 
     @Override
     public void start() {
+        //BLUE 1: strafe to barcode (Hor Right). Sense TSE. Forward. Drop cargo based on TSE. Move back to wall. Turn 90 degrees forward. Forward to carousel. Turn carousel. MOVE BACK TO THE BLUE TAPE AREA
+        //BLUE 2: strafe to barcode (Hor Left). Sense TSE. Forward. Drop cargo based on TSE. Move Back;
+        /*
+        horizontalRight(5);
+        resetEncoders();
+        detectShippingElement
+        backwards(0.2)
+        horizontalRight(0.2)
+        moveArm();
+        forward(5);
+        backward(10);
+        pivotRight(1);
+        backwards(2);
+        carouselFunc(1)
+        forwards(2)
+         */
 
-
+        pivotRight(1);
+        resetEncoders();
 
 
     }
 
     @Override
     public void loop() {
-        backRightWheel.setPower(drivePower);
     }
+
     @Override
     public void stop() {
         leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -67,7 +175,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     }
-
 
 
 
@@ -90,7 +197,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         rightWheel.setPower(drivePower);
         backLeftWheel.setPower(-drivePower);
-
 
 
     }
@@ -138,9 +244,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     }
 
     public void horizontalRight(int rotation) {
+        backRightWheel.setDirection(DcMotor.Direction.FORWARD);
+        leftWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightWheel.setDirection(DcMotor.Direction.REVERSE);
+        backLeftWheel.setDirection(DcMotor.Direction.FORWARD);
 
-        leftWheel.setTargetPosition(-rotation);
-        rightWheel.setTargetPosition(-rotation);
+        leftWheel.setTargetPosition(rotation);
+        rightWheel.setTargetPosition(rotation);
         backLeftWheel.setTargetPosition(rotation);
         backRightWheel.setTargetPosition(rotation);
 
@@ -149,8 +259,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftWheel.setPower(-drivePower);
-        rightWheel.setPower(-drivePower);
+        leftWheel.setPower(drivePower);
+        rightWheel.setPower(drivePower);
         backLeftWheel.setPower(drivePower);
         backRightWheel.setPower(drivePower);
     }
@@ -187,7 +297,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     }
 
 
-
     public void forward(int rotation) {
 
 
@@ -207,8 +316,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(drivePower);
 
 
-
-
     }
 
     public void backward(int rotation) {
@@ -216,7 +323,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         leftWheel.setTargetPosition(rotation);
         rightWheel.setTargetPosition(-rotation);
-        backLeftWheel.setTargetPosition(rotation);
+            backLeftWheel.setTargetPosition(rotation);
         backRightWheel.setTargetPosition(-rotation);
 
         leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -230,12 +337,5 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backRightWheel.setPower(-drivePower);
 
 
-
     }
-
-
-
-
-
-
 }
