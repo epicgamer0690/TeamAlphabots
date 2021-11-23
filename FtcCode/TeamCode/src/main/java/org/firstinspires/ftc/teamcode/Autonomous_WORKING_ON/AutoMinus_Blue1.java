@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="AutoMinus", group="Training")
     public class AutoMinus_Blue1 extends OpMode {
+
     DcMotor leftWheel;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
@@ -18,7 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
     String TSEPosition;
-    double drivePower = 0.01;
+    double drivePower = 0.5;
     //1 rotation = 360
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -118,6 +119,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         }
     }
 
+    public void Sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void pivotRight(int rotation) {
         rightWheel.setTargetPosition(-rotation);
         backLeftWheel.setTargetPosition(rotation);
@@ -131,14 +140,35 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         backLeftWheel.setPower(drivePower);
         backRightWheel.setPower(-drivePower);
 
+    }
 
+    public boolean busyness(int wheelNumber) {
+        if(wheelNumber == 1) {
+            return leftWheel.isBusy();
+        }
+        if(wheelNumber == 2) {
+            return rightWheel.isBusy();
+        }
+        if(wheelNumber == 3){
+            return backLeftWheel.isBusy();
+        }
+        if(wheelNumber == 4) {
+            return backRightWheel.isBusy();
+        }
+        return false;
+    }
 
-
+    public void stopMotor() {
+        leftWheel.setPower(0);
+        rightWheel.setPower(0);
+        backRightWheel.setPower(0);
+        backLeftWheel.setPower(0);
 
     }
 
     @Override
     public void start() {
+
         //BLUE 1: strafe to barcode (Hor Right). Sense TSE. Forward. Drop cargo based on TSE. Move back to wall. Turn 90 degrees forward. Forward to carousel. Turn carousel. MOVE BACK TO THE BLUE TAPE AREA
         //BLUE 2: strafe to barcode (Hor Left). Sense TSE. Forward. Drop cargo based on TSE. Move Back;
         /*
@@ -155,8 +185,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         carouselFunc(1)
         forwards(2)
          */
-
-        pivotRight(1);
+        int Motor_Tick_Counts = 558;
+        double distance = 96;
+        double rotationsNeeded = distance/(3.14 * 96);
+        int target = (int)(rotationsNeeded) * Motor_Tick_Counts;
+        forward(target);
+        while(busyness(1) || busyness(2) || busyness(3) || busyness(4)) {
+            telemetry.addData("Path", "Driving");
+            telemetry.update();
+        }
+        stopMotor();
         resetEncoders();
 
 
