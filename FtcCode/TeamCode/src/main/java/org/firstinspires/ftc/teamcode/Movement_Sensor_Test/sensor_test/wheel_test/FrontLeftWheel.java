@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
     @Override
     public void loop() {
-        leftWheel.setPower(drivePower);
+        leftWheel.setPower(-drivePower);
     }
     @Override
     public void stop() {

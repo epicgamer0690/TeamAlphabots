@@ -34,7 +34,7 @@ public class RearLeftWheel extends OpMode {
 
     @Override
     public void loop() {
-        backLeftWheel.setPower(drivePower);
+        backLeftWheel.setPower(-drivePower);
     }
     @Override
     public void stop() {

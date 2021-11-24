@@ -142,20 +142,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     }
 
-    public boolean busyness(int wheelNumber) {
-        if(wheelNumber == 1) {
-            return leftWheel.isBusy();
+    public void checkBusy() {
+        while (leftWheel.isBusy() || rightWheel.isBusy() || backRightWheel.isBusy() || backLeftWheel.isBusy()) {
+            telemetry.addData("Path", "Driving");
+            telemetry.update();
         }
-        if(wheelNumber == 2) {
-            return rightWheel.isBusy();
-        }
-        if(wheelNumber == 3){
-            return backLeftWheel.isBusy();
-        }
-        if(wheelNumber == 4) {
-            return backRightWheel.isBusy();
-        }
-        return false;
     }
 
     public void stopMotor() {
@@ -190,10 +181,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         double rotationsNeeded = distance/(3.14 * 96);
         int target = (int)(rotationsNeeded) * Motor_Tick_Counts;
         forward(target);
-        while(busyness(1) || busyness(2) || busyness(3) || busyness(4)) {
-            telemetry.addData("Path", "Driving");
-            telemetry.update();
-        }
+        checkBusy();
         stopMotor();
         resetEncoders();
 
