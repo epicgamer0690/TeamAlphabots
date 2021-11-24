@@ -36,42 +36,40 @@ class AutoMinus_Blue1_Test extends LinearOpMode {
     String TSEPosition;
     final static double ticks_per_cm = 2.0 * Math.PI * 9.6 /537.6;
     private ElapsedTime period = new ElapsedTime();
-@Override
+    @Override
     public void runOpMode() {
-    leftWheel = hardwareMap.dcMotor.get("left_wheel");
-    rightWheel = hardwareMap.dcMotor.get("right_wheel");
-    backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
-    backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-    armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
-    carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
-    intakeServo = hardwareMap.crservo.get("expansion_servo");
-    colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+        leftWheel = hardwareMap.dcMotor.get("left_wheel");
+        rightWheel = hardwareMap.dcMotor.get("right_wheel");
+        backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
+        backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        intakeServo = hardwareMap.crservo.get("expansion_servo");
+        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
 
-    leftWheel.setDirection(DcMotor.Direction.REVERSE);
-    rightWheel.setDirection(DcMotor.Direction.FORWARD);
-    backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-    backRightWheel.setDirection(DcMotor.Direction.FORWARD);
-
-
-    leftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    rightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    backLeftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    backRightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    waitForStart();
-
-    resetEncoders();
-    setCmTargetPosition(10);
-    leftWheel.setPower(0.5);
-    rightWheel.setPower(0.5);
-    backRightWheel.setPower(0.5);
-    backLeftWheel.setPower(0.5);
-    runToPosition();
-    checkBusy();
-    stopMotor();
+        leftWheel.setDirection(DcMotor.Direction.REVERSE);
+        rightWheel.setDirection(DcMotor.Direction.FORWARD);
+        backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
+        backRightWheel.setDirection(DcMotor.Direction.FORWARD);
 
 
+        leftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        waitForStart();
+
+        resetEncoders();
+        setCmTargetPosition(10);
+        leftWheel.setPower(0.5);
+        Sleep(500);
+//        rightWheel.setPower(0.5);
+//        backRightWheel.setPower(0.5);
+//        backLeftWheel.setPower(0.5);
+        runToPosition();
+        checkBusy();
+        stopMotor();
 
 
 
@@ -82,7 +80,10 @@ class AutoMinus_Blue1_Test extends LinearOpMode {
 
 
 
-}
+
+
+
+    }
 
     public void resetEncoders() {
         leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -125,7 +126,7 @@ class AutoMinus_Blue1_Test extends LinearOpMode {
 
     }
 
-    public void sleep(int milliseconds){
+    public void Sleep(int milliseconds){
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
