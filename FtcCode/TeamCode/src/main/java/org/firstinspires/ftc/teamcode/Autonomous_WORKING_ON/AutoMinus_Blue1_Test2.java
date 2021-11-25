@@ -40,7 +40,8 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
 
     @Override
     public void start() {
-        encoderDriveMat(10, 1, 0.2);
+        encoderDriveMat(200, 1, 0.2);
+        encoderDriveMat(100, 2, 0.2);
     }
 
     @Override
@@ -58,11 +59,6 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         final double ENCODER_CPR = 537.6;
         final double GEAR_RATIO = 1;
@@ -109,7 +105,13 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
                 rearRightMotor.setTargetPosition((int) -counts);
                 break;
         }
-        while (frontLeftMotor.isBusy() || frontRightMotor.isBusy() || rearLeftMotor.isBusy() || rearRightMotor.isBusy()) {
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        while (frontLeftMotor.isBusy() && frontRightMotor.isBusy() && rearLeftMotor.isBusy() && rearRightMotor.isBusy()) {
             frontLeftMotor.setPower(power);
             frontRightMotor.setPower(power);
             rearLeftMotor.setPower(power);

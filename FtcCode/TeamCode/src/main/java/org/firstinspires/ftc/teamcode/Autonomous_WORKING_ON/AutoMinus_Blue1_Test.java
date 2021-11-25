@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         forwards(2)
          */
 @Autonomous(name="AutoMinus_Blue1_Test", group="Training")
-class AutoMinus_Blue1_Test extends LinearOpMode {
+    public class AutoMinus_Blue1_Test extends LinearOpMode {
 
     DcMotor leftWheel;
     DcMotor rightWheel;
@@ -34,10 +34,12 @@ class AutoMinus_Blue1_Test extends LinearOpMode {
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
     String TSEPosition;
-    final static double ticks_per_cm = 2.0 * Math.PI * 9.6 /537.6;
+
+    final static double ticks_per_cm = 1/(Math.PI * 9.6) * 537.6;
     private ElapsedTime period = new ElapsedTime();
     @Override
     public void runOpMode() {
+
         leftWheel = hardwareMap.dcMotor.get("left_wheel");
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
@@ -46,6 +48,11 @@ class AutoMinus_Blue1_Test extends LinearOpMode {
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+
+        leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         rightWheel.setDirection(DcMotor.Direction.FORWARD);
@@ -61,8 +68,10 @@ class AutoMinus_Blue1_Test extends LinearOpMode {
         waitForStart();
 
         resetEncoders();
-        setCmTargetPosition(10);
-        leftWheel.setPower(0.5);
+        setCmTargetPosition(30);
+        leftWheel.setPower(0.25);
+        rightWheel.setPower(0.25);
+        backLeftWheel.setPower(0.25);
         Sleep(500);
 //        rightWheel.setPower(0.5);
 //        backRightWheel.setPower(0.5);
@@ -111,7 +120,8 @@ class AutoMinus_Blue1_Test extends LinearOpMode {
 
     public void checkBusy() {
         if (opModeIsActive()) {
-            while (leftWheel.isBusy() || rightWheel.isBusy() || backLeftWheel.isBusy() || backRightWheel.isBusy()){
+
+            while (leftWheel.isBusy() && rightWheel.isBusy() && backLeftWheel.isBusy() && backRightWheel.isBusy()){
                 telemetry.addData("Path", "Driving Currently");
                 telemetry.update();
             }
