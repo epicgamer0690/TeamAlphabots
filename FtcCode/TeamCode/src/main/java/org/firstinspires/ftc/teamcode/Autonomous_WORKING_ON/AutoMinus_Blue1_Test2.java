@@ -40,8 +40,7 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
 
     @Override
     public void start() {
-        encoderDriveMat(200, 1, 0.2);
-        encoderDriveMat(100, 2, 0.2);
+        encoderMovement(200, 1, 0.5);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
 
     }
 
-    public void encoderDriveMat(double distance, int direction, double power) {
+    public void encoderMovement(double distance, int direction, double power) {
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -110,12 +109,13 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
         rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        frontLeftMotor.setPower(power);
+        frontRightMotor.setPower(power);
+        rearLeftMotor.setPower(power);
+        rearRightMotor.setPower(power);
 
         while (frontLeftMotor.isBusy() && frontRightMotor.isBusy() && rearLeftMotor.isBusy() && rearRightMotor.isBusy()) {
-            frontLeftMotor.setPower(power);
-            frontRightMotor.setPower(power);
-            rearLeftMotor.setPower(power);
-            rearRightMotor.setPower(power);
+
         }
         frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

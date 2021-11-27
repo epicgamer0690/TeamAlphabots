@@ -50,17 +50,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     public void moveDriveTrain() {
-        double vertical = 0; //Moves forwards and backwards
-        double horizontal = 0; //Move side-to-side
-        double peevot = 0;
+        double drive = 0; //Moves forwards and backwards
+        double strafe = 0; //Move side-to-side
+        double rotate = 0;
+        double denominator = 1;
 
-        vertical = -gamepad1.left_stick_y;
-        horizontal = gamepad1.left_stick_x;
-        peevot = gamepad1.right_stick_x;
-        rightWheel.setPower(peevot + (-vertical + horizontal));
-        backRightWheel.setPower(peevot + (-vertical - horizontal));
-        leftWheel.setPower(peevot + (-vertical - horizontal));
-        backLeftWheel.setPower(peevot + (-vertical + horizontal));
+        drive = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x * 1.1;
+        rotate = gamepad1.right_stick_x;
+        denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(rotate), 1);
+        rightWheel.setPower((drive + strafe + rotate)/denominator);
+        backRightWheel.setPower((drive - rotate + strafe)/denominator);
+        leftWheel.setPower((drive - rotate - strafe)/denominator);
+        backLeftWheel.setPower((drive + rotate - strafe)/denominator);
 
         spin();
     }
