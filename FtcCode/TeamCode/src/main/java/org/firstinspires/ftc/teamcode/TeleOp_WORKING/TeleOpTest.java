@@ -55,7 +55,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         double rotate = 0;
         double denominator = 1;
 
-        drive = -gamepad1.left_stick_y;
+        drive = gamepad1.left_stick_y;
         strafe = gamepad1.left_stick_x * 1.1;
         rotate = gamepad1.right_stick_x;
         denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(rotate), 1);
@@ -81,6 +81,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
+
+        leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 

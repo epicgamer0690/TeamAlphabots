@@ -10,11 +10,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
+//importing all the needed functions
 
 @Autonomous(name="ImuTest", group="Training")
-public class ImuTest extends LinearOpMode{
+public class ImuTest extends OpMode{
 
     DcMotor leftWheel;
     DcMotor rightWheel;
@@ -23,136 +22,96 @@ public class ImuTest extends LinearOpMode{
     BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
-    private double targetAngle;
-    private double kP, kI, kD;
-    private double accumulatedError = 0;
-    private ElapsedTime timer = new ElapsedTime();
-    private double lastError = 0.0;
-    private double lastTime = 0.0;
+    boolean isStopRequested = false;
+    //initializing each motor and some important variable.
 
-
-    @Override
-public void runOpMode() {
+@Override
+public void init() {
 
     leftWheel = hardwareMap.dcMotor.get("left_wheel");
     rightWheel = hardwareMap.dcMotor.get("right_wheel");
     backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
     backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
     imu = hardwareMap.get(BNO055IMU.class, "imu");
+    //Defining Hardware Map
+
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
     parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-    parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+    parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
     parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-    parameters.loggingEnabled      = true;
-    parameters.loggingTag          = "IMU";
+    parameters.loggingEnabled = true;
+    parameters.loggingTag = "IMU";
     parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
     imu.initialize(parameters);
-
-
-    waitForStart();
-
-    turn(90);
-    sleep(3000);
-    turnTo(-90);
-
-
+    //initializing the IMU and setting the units needed
 
 
 }
-public void resetAngle(){
+
+@Override
+public void start() { //when the start button is pressed on the driver hub, this code runs
+
+    turn(90); //turning robot 90 degrees counter-clockwise
+
+
+}
+@Override
+public void loop(){ //items in this loop run infinitely until the program ends
+
+}
+
+@Override
+public void stop(){ //items in this method run once the stop button is pressed.
+    isStopRequested = true;
+}
+
+
+public void resetAngle(){ //resetting the angles (after we finish turn)
     lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
     currAngle = 0;
 }
-public double getAngle(){
+public double getAngle() {
     Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    double changeInAngle = orientation.firstAngle - lastAngles.firstAngle;
+    double changeInAngle = orientation.firstAngle - lastAngles.firstAngle; //change in angle from previous angle to current angle
 
-    if(changeInAngle > 180){
+    if (changeInAngle > 180) {
         changeInAngle -= 360;
-    }
-    else if(changeInAngle <= -180){
+    } else if (changeInAngle <= -180) {
         changeInAngle += 360;
     }
+    //these if statements accommodate for the IMU only going until 180 degrees.
 
     currAngle += changeInAngle;
     lastAngles = orientation;
+
     telemetry.addData("gyro", orientation.firstAngle);
     telemetry.update();
     return currAngle;
 }
-public double getAbsoluteAngle() {
-    return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-}
-void turnToPID(double targetAngle) {
-    turnPIDController(targetAngle, 0.01, 0, 0.003);
-    while(opModeIsActive() && Math.abs(targetAngle - getAbsoluteAngle()) > 1) {
-        double motorPower = update(getAbsoluteAngle());
-        setMotorPower(-motorPower, motorPower, - motorPower, motorPower);
-    }
-    setAllPower(0);
-}
-void turnPID(double degrees) {
-       turnToPID( degrees + getAbsoluteAngle());
-}
-
-
-public void turnPIDController(double target, double p, double i, double d) {
-        targetAngle = target;
-
-        kP = p;
-        kI = i;
-        kD = d;
-}
-
-public double update(double currentAngle) {
-//turnPIDController
-    double error = targetAngle - currentAngle;
-    error %= 360;
-    error += 360;
-    error %= 360;
-
-    if(error > 180) {
-        error -= 360;
-    }
-        accumulatedError += error;
-        if(Math.abs(error) < 1) {
-            accumulatedError = 0;
-        }
-        accumulatedError = Math.abs(accumulatedError) * Math.signum(error);
-        double slope = 0;
-        if(lastTime > 0){
-            slope = (error - lastError)/(timer.milliseconds() - lastTime);
-        }
-        lastTime = timer.milliseconds();
-        lastError = error;
-
-        double motorPower = 0.1 * Math.signum(error) + 0.9 *Math.tanh(kP * error + kI * accumulatedError + kD * slope);
-        return motorPower;
-
-
-    }
-
-
-
-
-
-
 
 public void turn(double degrees){
 
     resetAngle();
     double error = degrees;
 
-    while(opModeIsActive() && Math.abs(error) > 2){
+    while(isStopRequested == false && Math.abs(error) > 2){
         double motorPower = ( error < 0 ? -0.3 : 0.3);
         setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
         error = degrees - getAngle();
+
         telemetry.addData("error", error);
         telemetry.update();
 
 
     }
     setAllPower(0);
+}
+public void sleep(int milliseconds) {
+    try {
+        Thread.sleep(milliseconds);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
 }
 
 

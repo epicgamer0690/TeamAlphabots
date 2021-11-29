@@ -35,20 +35,20 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
 
-
+    }
+    @Override
+    public void loop() {
     }
 
     @Override
     public void start() {
-        encoderMovement(200, 1, 0.5);
+        encoderMovement(50 , 1, 0.2);
     }
 
-    @Override
-    public void loop() {
-
-    }
 
     public void encoderMovement(double distance, int direction, double power) {
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -58,6 +58,12 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
         frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         final double ENCODER_CPR = 537.6;
         final double GEAR_RATIO = 1;
@@ -72,47 +78,71 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
                 frontRightMotor.setTargetPosition((int) counts);
                 rearLeftMotor.setTargetPosition((int) counts);
                 rearRightMotor.setTargetPosition((int) counts);
+                frontLeftMotor.setPower(power);
+                frontRightMotor.setPower(power);
+                rearLeftMotor.setPower(power);
+                rearRightMotor.setPower(power);
                 break;
             case 2: // robot will move backward
                 frontLeftMotor.setTargetPosition((int) -counts);
                 frontRightMotor.setTargetPosition((int) -counts);
                 rearLeftMotor.setTargetPosition((int) -counts);
                 rearRightMotor.setTargetPosition((int) -counts);
+                frontLeftMotor.setPower(-power);
+                frontRightMotor.setPower(-power);
+                rearLeftMotor.setPower(-power);
+                rearRightMotor.setPower(-power);
+
                 break;
             case 3: // robot will strafe left
                 frontLeftMotor.setTargetPosition((int) -counts);
                 frontRightMotor.setTargetPosition((int) counts);
                 rearLeftMotor.setTargetPosition((int) counts);
                 rearRightMotor.setTargetPosition((int) -counts);
+                frontLeftMotor.setPower(-power);
+                frontRightMotor.setPower(power);
+                rearLeftMotor.setPower(power);
+                rearRightMotor.setPower(-power);
                 break;
             case 4: // robot will strafe right
                 frontLeftMotor.setTargetPosition((int) counts);
                 frontRightMotor.setTargetPosition((int) -counts);
                 rearLeftMotor.setTargetPosition((int) -counts);
                 rearRightMotor.setTargetPosition((int) counts);
+                frontLeftMotor.setPower(power);
+                frontRightMotor.setPower(-power);
+                rearLeftMotor.setPower(-power);
+                rearRightMotor.setPower(power);
                 break;
             case 5: // robot will rotate left
                 frontLeftMotor.setTargetPosition((int) -counts);
                 frontRightMotor.setTargetPosition((int) counts);
                 rearLeftMotor.setTargetPosition((int) -counts);
                 rearRightMotor.setTargetPosition((int) counts);
+                frontLeftMotor.setPower(-power);
+                frontRightMotor.setPower(power);
+                rearLeftMotor.setPower(-power);
+                rearRightMotor.setPower(power);
                 break;
             case 6: // robot will rotate right
                 frontLeftMotor.setTargetPosition((int) counts);
                 frontRightMotor.setTargetPosition((int) -counts);
                 rearLeftMotor.setTargetPosition((int) counts);
                 rearRightMotor.setTargetPosition((int) -counts);
+                frontLeftMotor.setPower(power);
+                frontRightMotor.setPower(-power);
+                rearLeftMotor.setPower(power);
+                rearRightMotor.setPower(-power);
                 break;
+
+
         }
+
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rearLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rearRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontLeftMotor.setPower(power);
-        frontRightMotor.setPower(power);
-        rearLeftMotor.setPower(power);
-        rearRightMotor.setPower(power);
 
         while (frontLeftMotor.isBusy() && frontRightMotor.isBusy() && rearLeftMotor.isBusy() && rearRightMotor.isBusy()) {
 
