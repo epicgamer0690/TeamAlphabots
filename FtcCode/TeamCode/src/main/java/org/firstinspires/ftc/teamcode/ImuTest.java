@@ -33,6 +33,11 @@ public void init() {
     backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
     backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
     imu = hardwareMap.get(BNO055IMU.class, "imu");
+    leftWheel.setDirection(DcMotor.Direction.REVERSE);
+    leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     //Defining Hardware Map
 
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
