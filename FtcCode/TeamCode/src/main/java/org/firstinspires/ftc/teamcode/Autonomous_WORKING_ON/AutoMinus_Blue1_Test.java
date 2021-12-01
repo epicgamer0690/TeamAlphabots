@@ -34,6 +34,7 @@ public class AutoMinus_Blue1_Test extends LinearOpMode {
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
     String TSEPosition;
+    String ANAND_IS_BAD;
     final static double ticks_per_cm = 2.0 * Math.PI * 9.6 /537.6;
     private ElapsedTime period = new ElapsedTime();
     @Override
