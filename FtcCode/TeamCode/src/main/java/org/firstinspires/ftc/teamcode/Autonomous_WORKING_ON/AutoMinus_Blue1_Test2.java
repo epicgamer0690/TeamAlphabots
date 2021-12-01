@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="AutoMinus_Blue1_Test2", group="Training")
@@ -42,13 +43,14 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
 
     @Override
     public void start() {
-        encoderMovement(50 , 1, 0.2);
+        encoderMovement(50 , 3, 0.2);
     }
 
 
     public void encoderMovement(double distance, int direction, double power) {
 
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
+        backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
 
         setZeroPowerBehaiv();
         resetEncoders();
