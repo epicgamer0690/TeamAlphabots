@@ -7,6 +7,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,74 +17,79 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-    @Autonomous(name="AutoMinus_Blue1_Test3", group="Training")
-public class AutoMinus_Blue1_Test3 extends OpMode {
+@Autonomous(name="AutoMinus_Blue1_Test3", group="Training")
+public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
-    DcMotor leftWheel;
-    DcMotor rightWheel;
-    DcMotor backLeftWheel;
-    DcMotor backRightWheel;
-    DcMotor armMotor;
-    DcMotor carouselMotor;
-    CRServo intakeServo;
-    RevColorSensorV3 colorSensor;
+        DcMotor leftWheel;
+        DcMotor rightWheel;
+        DcMotor backLeftWheel;
+        DcMotor backRightWheel;
+        DcMotor armMotor;
+        DcMotor carouselMotor;
+        CRServo intakeServo;
+        RevColorSensorV3 colorSensor;
         BNO055IMU imu;
         private Orientation lastAngles = new Orientation();
         private double currAngle = 0.0;
         boolean isStopRequested = false;
-    double drivePower = 0.5;
-    //1 rotation = 360
+        double drivePower = 0.5;
+        //1 rotation = 360
 
-    private ElapsedTime runtime = new ElapsedTime();
+        private ElapsedTime runtime = new ElapsedTime();
 
-    @Override
-    public void init() {
-        leftWheel = hardwareMap.dcMotor.get("left_wheel");
-        rightWheel = hardwareMap.dcMotor.get("right_wheel");
-        backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
-        backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
-        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
-        intakeServo = hardwareMap.crservo.get("expansion_servo");
-        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu.initialize(parameters);
-        //initializing the IMU and setting the units needed
-
-    }
-    @Override
-    public void loop() {
-    }
-
-    @Override
-    public void start() {
-        shippingHubLevel(195);
-        resetEncoders();
-        encoderMovement(60 , 1, 0.2);
-        turn(90);
-        outakeFunc();
-        encoderMovement(60, 2, 0.2);
+        @Override
+        public void runOpMode() {
+            leftWheel = hardwareMap.dcMotor.get("left_wheel");
+            rightWheel = hardwareMap.dcMotor.get("right_wheel");
+            backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
+            backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
+            armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+            carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+            intakeServo = hardwareMap.crservo.get("expansion_servo");
+            colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+            imu = hardwareMap.get(BNO055IMU.class, "imu");
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+            parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+            parameters.loggingEnabled = true;
+            parameters.loggingTag = "IMU";
+            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+            imu.initialize(parameters);
+            //initializing the IMU and setting the units needed
+            leftWheel.setDirection(DcMotor.Direction.REVERSE);
+            backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
+            setZeroPowerBehaiv();
+            setAllMotorPowers(0);
 
 
+            waitForStart();
+            while(opModeIsActive()) {
+                turnRight(30);
+                shippingHubLevel(195);
+                encoderMovement(70, 1, 0.5);
+                intakeServo.setPower(1);
+                sleep(2);
+                intakeServo.setPower(0);
+                encoderMovement(30, 2, 0.5);
+                turnLeft(120);
+                encoderMovement(135, 2, 0.5);
+                turnRight(-90);
+                carouselFunc();
+                encoderMovement(69, 1, 0.3);
 
 
 
-    }
+            }
+
+
+
+        }
+
 
 
     public void encoderMovement(double distance, int direction, double power) {
 
-        leftWheel.setDirection(DcMotor.Direction.REVERSE);
-        backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-
-        setZeroPowerBehaiv();
         resetEncoders();
         setRUE();
 
@@ -129,6 +135,11 @@ public class AutoMinus_Blue1_Test3 extends OpMode {
         }
         resetEncoders();
     }
+        public void carouselFunc(){
+            carouselMotor.setPower(0.5);
+            sleep(2000);
+            carouselMotor.setPower(0);
+        }
         public void resetAngle(){ //resetting the angles (after we finish turn)
             lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             currAngle = 0;
@@ -152,23 +163,48 @@ public class AutoMinus_Blue1_Test3 extends OpMode {
             return currAngle;
         }
 
-        public void turn(double degrees){
+        public void turnLeft(double degrees){
 
             resetAngle();
             double error = degrees;
 
-            while(isStopRequested == false && Math.abs(error) > 2){
+            while(opModeIsActive() && Math.abs(error) > 2){
                 double motorPower = ( error < 0 ? -0.3 : 0.3);
-                setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
+                setMotorPowers(motorPower, -motorPower, motorPower, -motorPower);
                 error = degrees - getAngle();
 
                 telemetry.addData("error", error);
+                telemetry.addData("angle", currAngle);
+                telemetry.addData("1 imu heading", lastAngles.firstAngle);
+                telemetry.addData("2 global heading", currAngle);
+                telemetry.addData("3 correction", error);
                 telemetry.update();
 
 
             }
             setAllMotorPowers(0);
         }
+    public void turnRight(double degrees){
+
+        resetAngle();
+        double error = degrees;
+
+        while(opModeIsActive() && Math.abs(error) > 2){
+            double motorPower = ( error < 0 ? -0.3 : 0.3);
+            setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
+            error = degrees - getAngle();
+
+            telemetry.addData("error", error);
+            telemetry.addData("angle", currAngle);
+            telemetry.addData("1 imu heading", lastAngles.firstAngle);
+            telemetry.addData("2 global heading", currAngle);
+            telemetry.addData("3 correction", error);
+            telemetry.update();
+
+
+        }
+        setAllMotorPowers(0);
+    }
         public void turnTo(double degrees) {
             Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             double error = degrees - orientation.firstAngle;
@@ -179,7 +215,7 @@ public class AutoMinus_Blue1_Test3 extends OpMode {
                 error += 360;
             }
 
-            turn(error);
+            turnLeft(error);
 
         }
 
