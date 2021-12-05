@@ -65,20 +65,27 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
             waitForStart();
             while(opModeIsActive()) {
-                turnRight(30);
-                shippingHubLevel(195);
-                encoderMovement(70, 1, 0.5);
+                turnRight(25);
+                shippingHubLevel(140, 0.3);
+                sleep(500);
+                encoderMovement(60, 1, 0.5);
+                sleep(500);
                 intakeServo.setPower(1);
-                sleep(2);
+                sleep(1000);
                 intakeServo.setPower(0);
-                encoderMovement(30, 2, 0.5);
-                turnLeft(120);
-                encoderMovement(135, 2, 0.5);
-                turnRight(-90);
-                carouselFunc();
-                encoderMovement(69, 1, 0.3);
-
-
+                sleep(125);
+                intakeServo.setPower(1);
+                sleep(1000);
+                intakeServo.setPower(0);
+                shippingHubLevel(10, 0.04);
+                sleep(4000);
+                break;
+                //encoderMovement(30, 2, 0.5);
+                //turnRight(120);
+                //encoderMovement(135, 2, 0.5);
+                //turnRight(-90);
+                //carouselFunc();
+                //encoderMovement(69, 1, 0.3);
 
             }
 
@@ -219,11 +226,11 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
         }
 
-        public void shippingHubLevel(int rotation) {
+        public void shippingHubLevel(int rotation, double pwr) {
         resetEncoders();
         armMotor.setTargetPosition(rotation);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
+        armMotor.setPower(pwr);
     }
     public void sleep(int milliseconds) {
         try {

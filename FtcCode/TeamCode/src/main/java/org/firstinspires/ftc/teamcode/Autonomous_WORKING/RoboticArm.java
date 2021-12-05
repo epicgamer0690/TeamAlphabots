@@ -60,7 +60,7 @@ public class RoboticArm extends OpMode {
 
     @Override
     public void start() {
-
+        /*
         shippingHubLevel(65);
         resetEncoders();
 
@@ -70,7 +70,12 @@ public class RoboticArm extends OpMode {
         shippingHubLevel(195);
         resetEncoders();
 
-        shippingHubLevel(10);
+         */
+
+        shippingHubLevel(155);
+        sleep(5000);
+        shippingHubLevel(20);
+        shippingHubLevel(0);
         resetEncoders();
 
     }
@@ -87,6 +92,14 @@ public class RoboticArm extends OpMode {
         backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
+    }
+
+    public void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
