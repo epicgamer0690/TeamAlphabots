@@ -1,7 +1,7 @@
 
 
 package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
-
+//parsh is bad
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
