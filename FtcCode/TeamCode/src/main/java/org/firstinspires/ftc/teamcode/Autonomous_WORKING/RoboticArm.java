@@ -27,16 +27,6 @@ public class RoboticArm extends OpMode {
     int rotation = 1000; //1 rotation = 360
 
 
-
-
-
-
-    private ElapsedTime runtime= new ElapsedTime();
-
-    public void carouselFunc() {
-
-    }
-
     @Override
     public void init() {
         armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
@@ -52,22 +42,19 @@ public class RoboticArm extends OpMode {
         }
     }
     public void resetEncoders() {
-        leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     @Override
     public void start() {
         /*
-        shippingHubLevel(65);
+        shippingHubLevel(65); - lvl 1
         resetEncoders();
 
-        shippingHubLevel(125);
+        shippingHubLevel(125); - lvl 2
         resetEncoders();
 
-        shippingHubLevel(195);
+        shippingHubLevel(195); - lvl 3
         resetEncoders();
 
          */
@@ -107,8 +94,5 @@ public class RoboticArm extends OpMode {
         armMotor.setTargetPosition(rotation);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setPower(1);
-        Sleep(1000);
-        armMotor.setTargetPosition(-rotation);
-        armMotor.setPower(0.04);
     }
 }

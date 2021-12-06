@@ -1,5 +1,5 @@
 
-
+//adb connect 192.168.43.1:5555
 package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
 //parsh is bad
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -65,7 +65,23 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
             waitForStart();
             while(opModeIsActive()) {
-                turnRight(25);
+                intakeServo.setDirection(CRServo.Direction.REVERSE);
+                intakeServo.setPower(1);
+                sleep(2000);
+                shippingHubLevel(1);
+                sleep(1000);
+                intakeServo.setPower(0);
+                sleep(1);
+                intakeServo.setPower(-1);
+                sleep(3000);
+                intakeServo.setPower(0);
+                sleep(1);
+                intakeServo.setPower(1);
+                sleep(2000);
+                shippingHubLevel(4);
+                sleep(2000);
+                break;
+                /*turnRight(25);
                 shippingHubLevel(140, 0.3);
                 sleep(500);
                 encoderMovement(60, 1, 0.5);
@@ -78,8 +94,10 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
                 sleep(1000);
                 intakeServo.setPower(0);
                 shippingHubLevel(10, 0.04);
-                sleep(4000);
-                break;
+                sleep(4000);*/
+
+
+
                 //encoderMovement(30, 2, 0.5);
                 //turnRight(120);
                 //encoderMovement(135, 2, 0.5);
@@ -226,11 +244,38 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
         }
 
-        public void shippingHubLevel(int rotation, double pwr) {
+        public void shippingHubLevel(int shippingLevel) {
         resetEncoders();
-        armMotor.setTargetPosition(rotation);
+        int error = 0;
+        double pwr = 0;
+
+        switch(shippingLevel){
+            case 1:
+                armMotor.setTargetPosition(69);
+                error = 69;
+                break;
+            case 2:
+                armMotor.setTargetPosition(120);
+                error = 120;
+                break;
+            case 3:
+                armMotor.setTargetPosition(169);
+                error = 169;
+                break;
+            case 4:
+                armMotor.setTargetPosition(10);
+                error = 10;
+                break;
+        }
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(pwr);
+
+        while(Math.abs(armMotor.getCurrentPosition()) > 3){
+            error -= armMotor.getCurrentPosition();
+            pwr = 0.005 * error;
+            armMotor.setPower(pwr);
+        }
+
+
     }
     public void sleep(int milliseconds) {
         try {
