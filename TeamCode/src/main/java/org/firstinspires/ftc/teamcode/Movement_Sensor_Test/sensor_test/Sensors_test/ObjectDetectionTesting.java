@@ -171,29 +171,43 @@ public class ObjectDetectionTesting extends LinearOpMode {
                             // check label to see if the camera now sees a Duck         ** ADDED **
                             if (recognition.getLabel().equals("Duck")) {            //  ** ADDED **
                                 isDuckDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Object Detected", "Duck");
+                                telemetry.addData("Is Duck Detected", isDuckDetected);
+                                telemetry.update();
                                 encoderMovement(50, 1, 0.5);//  ** ADDED **
                             } else {                                               //  ** ADDED **
-                                isDuckDetected = false;                            //  ** ADDED **
+                                isDuckDetected = false;
+                                telemetry.addData("Is Duck Detected", isDuckDetected);
+                                telemetry.update();//  ** ADDED **
                             }
                             if (recognition.getLabel().equals("Cube")) {            //  ** ADDED **
                                 isCubeDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Object Detected", "Cube");
+                                telemetry.addData("Is Cube Detected", isCubeDetected);
+                                telemetry.update();
 
                             } else {                                               //  ** ADDED **
-                                isCubeDetected = false;                            //  ** ADDED **
+                                isCubeDetected = false;
+                                telemetry.addData("Is Cube Detected", isCubeDetected);
+                                telemetry.update();
+//  ** ADDED **
                             }
                             if (recognition.getLabel().equals("Ball")) {            //  ** ADDED **
                                 isBallDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Object Detected", "Ball");
+                                telemetry.addData("Is Ball Detected", isBallDetected);
+                                telemetry.update();
                             } else {                                               //  ** ADDED **
-                                isBallDetected = false;                            //  ** ADDED **
+                                isBallDetected = false;
+                                telemetry.addData("Is Ball Detected", isBallDetected);
+                                telemetry.update();//  ** ADDED **
                             }
                             if (recognition.getLabel().equals("Marker")) {            //  ** ADDED **
                                 isMarkerDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Object Detected", "Marker");
+                                telemetry.addData("Is Marker Detected", isMarkerDetected);
+                                telemetry.update();
                             } else {                                               //  ** ADDED **
-                                isMarkerDetected = false;                            //  ** ADDED **
+                                isMarkerDetected = false;
+                                telemetry.addData("Is Marker Detected", isMarkerDetected);
+                                telemetry.update();
+//  ** ADDED **
                             }
                         }
                         telemetry.update();
@@ -211,6 +225,7 @@ public class ObjectDetectionTesting extends LinearOpMode {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */
+
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
