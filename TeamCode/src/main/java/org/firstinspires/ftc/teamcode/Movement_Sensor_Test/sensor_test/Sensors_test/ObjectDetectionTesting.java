@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -63,6 +63,9 @@ public class ObjectDetectionTesting extends LinearOpMode {
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
     BNO055IMU imu;
+    boolean isDuckDetected = false;
+    int whichLevel;
+
 
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
@@ -137,14 +140,15 @@ public class ObjectDetectionTesting extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(2.5, 16.0/9.0);
+            tfod.setZoom(1.75, 16.0/9.0);
         }
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
-        waitForStart();
-
+        while(!opModeIsActive()) {
+            waitForStart();
+        }
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 if (tfod != null) {
@@ -156,10 +160,8 @@ public class ObjectDetectionTesting extends LinearOpMode {
 
                         // step through the list of recognitions and display boundary info.
                         int i = 0;
-                        boolean isDuckDetected = false;
-                        boolean isCubeDetected = false;
-                        boolean isBallDetected = false;
-                        boolean isMarkerDetected = false;
+
+
                         for (Recognition recognition : updatedRecognitions) {
                             telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                             telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
@@ -169,46 +171,40 @@ public class ObjectDetectionTesting extends LinearOpMode {
                             i++;
 
                             // check label to see if the camera now sees a Duck         ** ADDED **
-                            if (recognition.getLabel().equals("Duck")) {            //  ** ADDED **
-                                isDuckDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Is Duck Detected", isDuckDetected);
-                                telemetry.update();
-                                encoderMovement(50, 1, 0.5);//  ** ADDED **
-                            } else {                                               //  ** ADDED **
-                                isDuckDetected = false;
-                                telemetry.addData("Is Duck Detected", isDuckDetected);
-                                telemetry.update();//  ** ADDED **
-                            }
-                            if (recognition.getLabel().equals("Cube")) {            //  ** ADDED **
-                                isCubeDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Is Cube Detected", isCubeDetected);
-                                telemetry.update();
+//                            if (recognition.getLabel().equals("Duck")) {            //  ** ADDED **
+//                                isDuckDetected = true;
+//                                whichLevel = 1;//  ** ADDED **
+//                                telemetry.addData("Is Duck Detected", isDuckDetected);
+//                                telemetry.addData("Level", whichLevel);
+//                                telemetry.update();
+//
+//                            } else if(!recognition.getLabel().equals("Duck")) {                                               //  ** ADDED **
+//                                isDuckDetected = false;
+//                                whichLevel
+//                                telemetry.addData("Is Duck Detected", isDuckDetected);
+//                                telemetry.addData("Level", whichLevel);
+//                                telemetry.update();//  ** ADDED **
+//                            }
+                        if(updatedRecognitions.size() == 0) {
+                            encoderMovement(27, 4, 0.5);
 
-                            } else {                                               //  ** ADDED **
-                                isCubeDetected = false;
-                                telemetry.addData("Is Cube Detected", isCubeDetected);
+                            if(updatedRecognitions.size() == 0) {
+                                whichLevel = 3;
+                                telemetry.addData("Level", whichLevel);
                                 telemetry.update();
-//  ** ADDED **
+                            } else {
+                                whichLevel = 1;
+                                telemetry.addData("Level", whichLevel);
+                                telemetry.update();
                             }
-                            if (recognition.getLabel().equals("Ball")) {            //  ** ADDED **
-                                isBallDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Is Ball Detected", isBallDetected);
-                                telemetry.update();
-                            } else {                                               //  ** ADDED **
-                                isBallDetected = false;
-                                telemetry.addData("Is Ball Detected", isBallDetected);
-                                telemetry.update();//  ** ADDED **
+
+
+                            } else {
+                            whichLevel = 2;
+                            telemetry.addData("Level", whichLevel);
+                            telemetry.update();
                             }
-                            if (recognition.getLabel().equals("Marker")) {            //  ** ADDED **
-                                isMarkerDetected = true;                             //  ** ADDED **
-                                telemetry.addData("Is Marker Detected", isMarkerDetected);
-                                telemetry.update();
-                            } else {                                               //  ** ADDED **
-                                isMarkerDetected = false;
-                                telemetry.addData("Is Marker Detected", isMarkerDetected);
-                                telemetry.update();
-//  ** ADDED **
-                            }
+
                         }
                         telemetry.update();
                     }
@@ -229,7 +225,7 @@ public class ObjectDetectionTesting extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
