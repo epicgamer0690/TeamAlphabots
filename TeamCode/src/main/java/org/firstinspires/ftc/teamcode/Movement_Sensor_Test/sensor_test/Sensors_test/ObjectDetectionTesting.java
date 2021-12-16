@@ -204,6 +204,14 @@ public class ObjectDetectionTesting extends LinearOpMode {
                             telemetry.addData("Level", whichLevel);
                             telemetry.update();
                             }
+//                        whichLevel = 0;
+//                        while(opModeIsActive() && whichLevel < 3) {
+//                            whichLevel++;
+//                            if(updatedRecognitions.size() == 1) {
+//                                break;
+//                            }
+//                            encoderMovement(27, 4, 0.5);
+//                        }
 
                         }
                         telemetry.update();
