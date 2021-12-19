@@ -12,7 +12,6 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.1'
@@ -44,6 +43,7 @@ dependencies {
     doc 'org.firstinspires.ftc:OnBotJava:6.2.0'
     doc 'org.firstinspires.ftc:Inspection:6.2.0'
 }
+
 
 task extractJavadoc {
     doLast {
