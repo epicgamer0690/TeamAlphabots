@@ -1,5 +1,5 @@
 
-//adb connect 192.168.43.1:5555
+
 package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
 //parsh is bad
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -65,46 +65,41 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
             waitForStart();
             while(opModeIsActive()) {
-                intakeServo.setDirection(CRServo.Direction.REVERSE);
-                intakeServo.setPower(1);
-                sleep(2000);
-                shippingHubLevel(1);
-                sleep(1000);
-                intakeServo.setPower(0);
-                sleep(1);
-                intakeServo.setPower(-1);
-                sleep(3000);
-                intakeServo.setPower(0);
-                sleep(1);
-                intakeServo.setPower(1);
-                sleep(2000);
-                shippingHubLevel(4);
-                sleep(2000);
+//                turnRight(25);
+//                shippingHubLevel(140, 0.3);
+//                sleep(500);
+//                encoderMovement(60, 1, 0.5);
+//                sleep(500);
+//                intakeServo.setPower(1);
+//                sleep(1000);
+//                intakeServo.setPower(0);
+//                sleep(125);
+//                intakeServo.setPower(1);
+//                sleep(1000);
+//                intakeServo.setPower(0);
+//                shippingHubLevel(10, 0.04);
+//                sleep(1000);
+//                encoderMovement(30, 2, 0.5);
+//                sleep(500);
+//                telemetry.addLine("Before");
+//                telemetry.update();
+//                turnRight(30);
+//                telemetry.addLine("After");
+//                telemetry.update();
+//                sleep(500);
+//                encoderMovement(135, 2, 0.5);
+//                sleep(500);
+//                turnRight(90);
+//                sleep(500);
+//                carouselFunc();
+//                sleep(500);
+//                encoderMovement(69, 1, 0.3);
+//                sleep(500);
+//
+//                break;
+                encoderMovement(100, 4, 0.5);
+                encoderMovement(100, 4, 0.5);
                 break;
-                /*turnRight(25);
-                shippingHubLevel(140, 0.3);
-                sleep(500);
-                encoderMovement(60, 1, 0.5);
-                sleep(500);
-                intakeServo.setPower(1);
-                sleep(1000);
-                intakeServo.setPower(0);
-                sleep(125);
-                intakeServo.setPower(1);
-                sleep(1000);
-                intakeServo.setPower(0);
-                shippingHubLevel(10, 0.04);
-                sleep(4000);*/
-
-
-
-                //encoderMovement(30, 2, 0.5);
-                //turnRight(120);
-                //encoderMovement(135, 2, 0.5);
-                //turnRight(-90);
-                //carouselFunc();
-                //encoderMovement(69, 1, 0.3);
-
             }
 
 
@@ -209,15 +204,21 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
             }
             setAllMotorPowers(0);
         }
-    public void turnRight(double degrees){
 
-        resetAngle();
-        double error = degrees;
+    public void forward(int distance, double power){
+
+
+        final double ENCODER_TPR = 537.6;
+        final double GEAR_RATIO = 1;
+        final double WHEEL_DIAMETER = 9.6;
+        final double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+        final double ROTATIONS = distance / CIRCUMFERENCE;
+        double ticks = ENCODER_TPR * ROTATIONS * GEAR_RATIO;
+        double error = distance;
 
         while(opModeIsActive() && Math.abs(error) > 2){
-            double motorPower = ( error < 0 ? -0.3 : 0.3);
-            setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
-            error = degrees - getAngle();
+            double motorPower = ( error < 0 ? -ticks : ticks);
+            setMotorPowers(motorPower, motorPower, motorPower, motorPower);
 
             telemetry.addData("error", error);
             telemetry.addData("angle", currAngle);
@@ -229,6 +230,33 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
         }
         setAllMotorPowers(0);
+    }
+    public void turnRight(double degrees){
+
+        resetAngle();
+        telemetry.addLine("resetting angle");
+        telemetry.update();
+        double error = degrees;
+
+        while(opModeIsActive() && Math.abs(error) > 2){
+            double motorPower = ( error < 0 ? -0.3 : 0.3);
+            setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
+            telemetry.addLine("Setting motor powers");
+            telemetry.update();
+            error = degrees - getAngle();
+
+//            telemetry.addData("error", error);
+//            telemetry.addData("angle", currAngle);
+//            telemetry.addData("1 imu heading", lastAngles.firstAngle);
+//            telemetry.addData("2 global heading", currAngle);
+//            telemetry.addData("3 correction", error);
+//            telemetry.update();
+
+
+        }
+        setAllMotorPowers(0);
+        telemetry.addLine("Setting all motor powers to 0");
+        telemetry.update();
     }
         public void turnTo(double degrees) {
             Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -244,38 +272,11 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
 
         }
 
-        public void shippingHubLevel(int shippingLevel) {
+        public void shippingHubLevel(int rotation, double pwr) {
         resetEncoders();
-        int error = 0;
-        double pwr = 0;
-
-        switch(shippingLevel){
-            case 1:
-                armMotor.setTargetPosition(69);
-                error = 69;
-                break;
-            case 2:
-                armMotor.setTargetPosition(120);
-                error = 120;
-                break;
-            case 3:
-                armMotor.setTargetPosition(169);
-                error = 169;
-                break;
-            case 4:
-                armMotor.setTargetPosition(10);
-                error = 10;
-                break;
-        }
+        armMotor.setTargetPosition(rotation);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while(Math.abs(armMotor.getCurrentPosition()) > 3){
-            error -= armMotor.getCurrentPosition();
-            pwr = 0.005 * error;
-            armMotor.setPower(pwr);
-        }
-
-
+        armMotor.setPower(pwr);
     }
     public void sleep(int milliseconds) {
         try {
@@ -298,9 +299,17 @@ public class AutoMinus_Blue1_Test3 extends LinearOpMode {
     }
     public void setMotorPowers(double lw, double rw, double bl, double br){
         leftWheel.setPower(lw);
+        telemetry.addLine("Setting left wheel");
+        telemetry.update();
         rightWheel.setPower(rw);
+        telemetry.addLine("Setting right wheel");
+        telemetry.update();
         backLeftWheel.setPower(bl);
+        telemetry.addLine("Setting back left wheel");
+        telemetry.update();
         backRightWheel.setPower(br);
+        telemetry.addLine("Setting back right wheel");
+        telemetry.update();
         }
     public void setTargetPositionCounts(double fl_count,double fr_count,double bl_count,double br_count){
         leftWheel.setTargetPosition((int) fl_count);
