@@ -11,10 +11,10 @@ public class TeleOpTest_2 extends LinearOpMode {
     @Override public void runOpMode() {
         // Declare our motors
         // Make sure your ID's match your configuration
-        DcMotor motorFrontLeft = hardwareMap.dcMotor.get("motorFrontLeft");
-        DcMotor motorBackLeft = hardwareMap.dcMotor.get("motorBackLeft");
-        DcMotor motorFrontRight = hardwareMap.dcMotor.get("motorFrontRight");
-        DcMotor motorBackRight = hardwareMap.dcMotor.get("motorBackRight");
+        DcMotor motorFrontLeft = hardwareMap.dcMotor.get("left_wheel");
+        DcMotor motorBackLeft = hardwareMap.dcMotor.get("right_wheel");
+        DcMotor motorFrontRight = hardwareMap.dcMotor.get("back_left_wheel");
+        DcMotor motorBackRight = hardwareMap.dcMotor.get("back_right_wheel");
 
         // Reverse the right side motors
         // Reverse left motors if you are using NeveRests
