@@ -262,8 +262,8 @@ public class SkystoneDeterminationExample extends LinearOpMode
             /*
              * Find the max of the 3 averages
              */
-            int maxOneTwo = Math.max(avg1, avg2);
-            int max = Math.max(maxOneTwo, avg3);
+            int maxOneTwo = Math.min(avg1, avg2);
+            int max = Math.min(maxOneTwo, avg3);
 
             /*
              * Now that we found the max, we actually need to go and
