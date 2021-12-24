@@ -22,16 +22,11 @@ public class RoboticArm extends OpMode {
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
-    DcMotor carouselMotor;
-    double drivePower = 0.5;
-    int rotation = 1000; //1 rotation = 360
+    double intergralSum = 0;
+    double Kp, Ki, Kd = 0;
+    private double lastError;
 
-
-
-
-
-
-    private ElapsedTime runtime= new ElapsedTime();
+    private ElapsedTime timer = new ElapsedTime();
 
     public void carouselFunc() {
 
@@ -72,11 +67,7 @@ public class RoboticArm extends OpMode {
 
          */
 
-        shippingHubLevel(155);
-        sleep(5000);
-        shippingHubLevel(20);
-        shippingHubLevel(0);
-        resetEncoders();
+        shippingHubLevelPID(3);
 
     }
 
@@ -110,5 +101,42 @@ public class RoboticArm extends OpMode {
         Sleep(1000);
         armMotor.setTargetPosition(-rotation);
         armMotor.setPower(0.04);
+    }
+    public double PIDControl(double reference, double state){
+        double error = reference - state;
+        intergralSum += error * timer.seconds();
+        double derivative = (error - lastError) * timer.seconds();
+        lastError = error;
+
+        timer.reset();
+
+        double output = (error * Kp) + (derivative * Kd) + (intergralSum * Ki);
+        return(output);
+    }
+    public void shippingHubLevelPID(int shippingLevel) {
+        resetEncoders();
+        int reference = 0;
+        switch (shippingLevel) {
+            case 0:
+                armMotor.setTargetPosition(10);
+                reference = 10;
+                break;
+            case 1:
+                armMotor.setTargetPosition(90);
+                reference = 90;
+                break;
+            case 2:
+                armMotor.setTargetPosition(120);
+                reference = 120;
+                break;
+            case 3:
+                armMotor.setTargetPosition(150);
+                reference = 150;
+                break;
+        }
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while(Math.abs(reference - armMotor.getCurrentPosition()) > 5){
+            armMotor.setPower(PIDControl(reference, armMotor.getCurrentPosition()));
+        }
     }
 }
