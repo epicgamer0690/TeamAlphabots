@@ -23,7 +23,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "EOCVTest", group = "Training")
+@Autonomous(name = "EOCVTest1", group = "Training")
 public class EOCVTest2 extends LinearOpMode
 {
     OpenCvWebcam webcam;
