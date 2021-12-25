@@ -23,7 +23,10 @@ public class RoboticArm extends OpMode {
     DcMotor backRightWheel;
     DcMotor armMotor;
     double intergralSum = 0;
-    double Kp, Ki, Kd = 0;
+    double Kp = 0.005;
+    double Ki = 0;
+    double Kd = 0;
+
     private double lastError;
 
     private ElapsedTime timer = new ElapsedTime();
@@ -39,14 +42,7 @@ public class RoboticArm extends OpMode {
 
 
     }
-    public void Sleep(int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    public void resetEncoders() {
+    public void resetEncoders(){
         leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -55,18 +51,6 @@ public class RoboticArm extends OpMode {
 
     @Override
     public void start() {
-        /*
-        shippingHubLevel(65);
-        resetEncoders();
-
-        shippingHubLevel(125);
-        resetEncoders();
-
-        shippingHubLevel(195);
-        resetEncoders();
-
-         */
-
         shippingHubLevelPID(3);
 
     }
@@ -94,14 +78,6 @@ public class RoboticArm extends OpMode {
     }
 
 
-    public void shippingHubLevel(int rotation) {
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
-        Sleep(1000);
-        armMotor.setTargetPosition(-rotation);
-        armMotor.setPower(0.04);
-    }
     public double PIDControl(double reference, double state){
         double error = reference - state;
         intergralSum += error * timer.seconds();
@@ -115,6 +91,7 @@ public class RoboticArm extends OpMode {
     }
     public void shippingHubLevelPID(int shippingLevel) {
         resetEncoders();
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         int reference = 0;
         switch (shippingLevel) {
             case 0:
@@ -134,7 +111,6 @@ public class RoboticArm extends OpMode {
                 reference = 150;
                 break;
         }
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         while(Math.abs(reference - armMotor.getCurrentPosition()) > 5){
             armMotor.setPower(PIDControl(reference, armMotor.getCurrentPosition()));
         }
