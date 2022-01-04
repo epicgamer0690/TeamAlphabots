@@ -11,12 +11,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.FreightDeterminationUpgraded;
 import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.FreightDeterminationUpgraded.*;
+import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous(name = "Autonomous_Blue1_12/11/21", group = "Training")
 public class AutoMinus_Blue1 extends LinearOpMode {
@@ -35,7 +41,10 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
-    FreightDeterminationPipeline pipeline = new FreightDeterminationPipeline();
+    OpenCvWebcam webcam;
+    SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
+    SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
+
 
 
 
@@ -59,6 +68,22 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
         //initializing the IMU and setting the units needed
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
+        webcam.setPipeline(pipeline);
+
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {}
+        });
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
         intakeServo.setDirection(CRServo.Direction.REVERSE);
@@ -66,7 +91,9 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
         int level = 0;
-        switch(pipeline.getAnalysis()) { // Determine which level it is on in init
+        snapshotAnalysis = pipeline.getAnalysis();
+
+        switch(snapshotAnalysis) { // Determine which level it is on in init
             case LEFT:
                 level = 1;
                 break;
