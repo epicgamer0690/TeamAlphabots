@@ -50,19 +50,38 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     public void moveDriveTrain() {
-        double drive = 0; //Moves forwards and backwards
+        double driveForward = 0; //Moves forwards and backwards
+        double driveBackward = 0;
         double strafe = 0; //Move side-to-side
         double rotate = 0;
+        double drive = 0;
         double denominator = 1;
 
+        driveForward = gamepad1.right_trigger;
+        driveBackward = gamepad1.left_trigger;
         drive = gamepad1.left_stick_y;
+
         strafe = gamepad1.left_stick_x * 1.1;
         rotate = gamepad1.right_stick_x;
         denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(rotate), 1);
-        rightWheel.setPower((drive + strafe + rotate)/denominator);
-        backRightWheel.setPower((drive - rotate + strafe)/denominator);
-        leftWheel.setPower((drive - rotate - strafe)/denominator);
-        backLeftWheel.setPower((drive + rotate - strafe)/denominator);
+        if(driveForward > 0) {
+            rightWheel.setPower(-driveForward);
+            backRightWheel.setPower(-driveForward);
+            leftWheel.setPower(-driveForward);
+            backLeftWheel.setPower(-driveForward);
+        } else if(driveBackward > 0) {
+            rightWheel.setPower(driveBackward);
+            backRightWheel.setPower(driveBackward);
+            leftWheel.setPower(driveBackward);
+            backLeftWheel.setPower(driveBackward);
+
+        }
+        else {
+            rightWheel.setPower((drive + strafe + rotate) / denominator);
+            backRightWheel.setPower((drive - rotate + strafe) / denominator);
+            leftWheel.setPower((drive - rotate - strafe) / denominator);
+            backLeftWheel.setPower((drive + rotate - strafe) / denominator);
+        }
 
         spin();
     }
@@ -105,13 +124,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             shippingHubLevel(65);
         }
         if(gamepad1.dpad_right){
-            shippingHubLevel(125 );
+            shippingHubLevel(115 );
         }
         if(gamepad1.dpad_up){
-            shippingHubLevel(195);
+            shippingHubLevel(150);
         }
         if(gamepad1.dpad_down){
-            shippingHubLevel(50);
+            shippingHubLevel(65);
+            shippingHubLevel(30);
             shippingHubLevel(10);
         }
     }

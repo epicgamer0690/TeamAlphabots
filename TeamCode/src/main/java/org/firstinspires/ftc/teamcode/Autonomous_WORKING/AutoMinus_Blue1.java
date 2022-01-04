@@ -8,12 +8,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.FreightDeterminationUpgraded;
+import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.FreightDeterminationUpgraded.*;
 
 @Autonomous(name = "Autonomous_Blue1_12/11/21", group = "Training")
 public class AutoMinus_Blue1 extends LinearOpMode {
@@ -32,6 +35,9 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
+    FreightDeterminationPipeline pipeline = new FreightDeterminationPipeline();
+
+
 
     @Override
     public void runOpMode() {
@@ -56,38 +62,70 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
         intakeServo.setDirection(CRServo.Direction.REVERSE);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
+        int level = 0;
+        switch(pipeline.getAnalysis()) { // Determine which level it is on in init
+            case LEFT:
+                level = 1;
+                break;
+            case RIGHT:
+                level = 3;
+                break;
+            case CENTER:
+                level = 2;
+                break;
+
+        }
+
 
 
         waitForStart();
 
         while (opModeIsActive()) {
-            shippingHubLevel(10, 0.2);
-            intakeServo.setPower(2);
-            sleep(1000);
-            encoderMovement(10, 1, 0.2);
+            shippingHubLevel(45, 1); // Raise arm to cruising level
+            sleep(250);
+            encoderMovement(10, 1, 0.2); // Drive forward 10 cm
             turnRight(30);
-            shippingHubLevel(160, 1);
-            sleep(1000);
+            goToShippingHubLevel(level);
+            sleep(250);
             encoderMovement(60, 1, 0.2);
-            sleep(1000);
+            sleep(250);
             intakeServo.setPower(0);
             sleep(125);
-            intakeServo.setPower(-2);
+            intakeServo.setPower(2);
             sleep(5000);
             intakeServo.setPower(0);
             sleep(1);
             encoderMovement(20, 2, 0.2);
-            shippingHubLevel(10, 0.2);
-            sleep(1000);
+            shippingHubLevel(65, 0.2);
+            sleep(250);
             turnRight(-30);
             encoderMovement(100, 4, 0.2);
-            encoderMovement(25, 2, 0.2);
+            encoderMovement(20, 2, 0.2);
             carouselFunc();
+            sleep(250);
+            shippingHubLevel(65, 0.2);
+            sleep(250);
             encoderMovement(45, 1, 0.2);
+
+
             break;
 
+        }
+    }
+    public void goToShippingHubLevel(int level) {
+        switch(level) {
+            case 1:
+                shippingHubLevel(65, 1);
+                break;
+            case 2:
+                shippingHubLevel(115, 1);
+                break;
+            case 3:
+                shippingHubLevel(165, 1);
+                break;
         }
     }
 
@@ -141,7 +179,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     }
 
     public void carouselFunc() {
-        carouselMotor.setPower(0.7);
+        carouselMotor.setPower(0.5);
         sleep(2000);
         carouselMotor.setPower(0);
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -21,7 +22,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * and then snapshot that value for later use when the START
  */
 
-@TeleOp
+@Autonomous(name = "Freight Determination", group = "Training")
 public class FreightDetermination extends LinearOpMode
 {
     OpenCvWebcam webcam;

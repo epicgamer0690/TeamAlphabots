@@ -61,26 +61,26 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            shippingHubLevel(10, 0.2);
-            intakeServo.setPower(2);
+            shippingHubLevel(65, 0.5);
+            intakeServo.setPower(-2);
             sleep(1000);
-            encoderMovement(10, 1, 0.2);
+            encoderMovement(10, 1, 0.5);
             turnRight(-30);
-            shippingHubLevel(160, 1);
-            sleep(1000);
-            encoderMovement(60, 1, 0.2);
-            sleep(1000);
+            shippingHubLevel(150, 1);
+            sleep(250);
+            encoderMovement(50, 1, 0.5);
+            sleep(250);
             intakeServo.setPower(0);
             sleep(125);
-            intakeServo.setPower(-2);
-            sleep(5000);
+            intakeServo.setPower(2);
+            sleep(3000);
             intakeServo.setPower(0);
-            sleep(1);
-            encoderMovement(20, 2, 0.2);
-            shippingHubLevel(10, 0.2);
-            sleep(1000);
+            sleep(250);
+            encoderMovement(10, 2, 0.5);
+            shippingHubLevel(65, 0.2);
+            sleep(250);
             turnRight(120);
-            encoderMovement(20, 2, 0.2);
+            encoderMovement(20, 2, 0.5);
             encoderMovement(100, 1, 1);
             break;
 
