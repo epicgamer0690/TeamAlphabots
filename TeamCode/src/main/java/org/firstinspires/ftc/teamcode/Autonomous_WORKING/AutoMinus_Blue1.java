@@ -21,6 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+
+
 @Autonomous(name = "Autonomous_Blue1_12/11/21", group = "Training")
 public class AutoMinus_Blue1 extends LinearOpMode {
     DcMotor leftWheel;
@@ -39,9 +41,8 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
     OpenCvWebcam webcam;
-    org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
-    org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis =
-    org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
+    SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
+    SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
 
 
     @Override
@@ -66,7 +67,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         //initializing the IMU and setting the units needed
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline();
+        pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
         webcam.setPipeline(pipeline);
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -81,6 +82,15 @@ public class AutoMinus_Blue1 extends LinearOpMode {
             public void onError(int errorCode) {}
         });
 
+        while (!isStarted() && !isStopRequested())
+        {
+            telemetry.addData("Realtime analysis", pipeline.getAnalysis());
+            telemetry.update();
+
+            // Don't burn CPU cycles busy-looping in this sample
+            sleep(50);
+        }
+
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
         intakeServo.setDirection(CRServo.Direction.REVERSE);
@@ -88,7 +98,11 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
         int level = 0;
+
         snapshotAnalysis = pipeline.getAnalysis();
+
+        telemetry.addData("Snapshot post-START analysis", snapshotAnalysis);
+        telemetry.update();
 
         switch(snapshotAnalysis) { // Determine which level it is on in init
             case LEFT:
@@ -101,13 +115,6 @@ public class AutoMinus_Blue1 extends LinearOpMode {
                 level = 2;
                 break;
 
-        }
-        while (!isStarted() && !isStopRequested())
-        {
-            telemetry.addData("Realtime analysis", pipeline.getAnalysis());
-            telemetry.update();
-
-            sleep(50);
         }
 
 
