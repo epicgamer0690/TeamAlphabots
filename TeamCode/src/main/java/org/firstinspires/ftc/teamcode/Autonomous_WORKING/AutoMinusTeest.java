@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test;
+package org.firstinspires.ftc.teamcode.Autonomous_WORKING;
 /*
  * Copyright (c) 2021 OpenFTC Team
  *
@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;

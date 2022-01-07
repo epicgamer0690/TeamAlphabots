@@ -39,11 +39,9 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
     OpenCvWebcam webcam;
-    SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
-    SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
-
-
-
+    org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
+    org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis =
+    org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
 
 
     @Override
@@ -68,7 +66,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         //initializing the IMU and setting the units needed
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
+        pipeline = new org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample.SkystoneDeterminationPipeline();
         webcam.setPipeline(pipeline);
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -82,6 +80,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
             @Override
             public void onError(int errorCode) {}
         });
+
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
         intakeServo.setDirection(CRServo.Direction.REVERSE);
