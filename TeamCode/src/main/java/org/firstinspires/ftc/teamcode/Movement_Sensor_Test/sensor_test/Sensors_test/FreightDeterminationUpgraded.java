@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -81,24 +82,7 @@ public class FreightDeterminationUpgraded extends LinearOpMode
         telemetry.addData("Snapshot post-START analysis", snapshotAnalysis);
         telemetry.update();
 
-        switch (snapshotAnalysis)
-        {
-            case LEFT:
-            {
-                /* Your autonomous code */
-                break;
-            }
-            case RIGHT:
-            {
-                break;
-            }
 
-            case CENTER:
-            {
-                
-                break;
-            }
-        }
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         while (opModeIsActive())

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous_WORKING;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import javax.tools.ForwardingFileObject;
 
+@Disabled
 @Autonomous(name="RoboticArmPID", group="Training")
 public class RoboticArmPID extends OpMode {
 

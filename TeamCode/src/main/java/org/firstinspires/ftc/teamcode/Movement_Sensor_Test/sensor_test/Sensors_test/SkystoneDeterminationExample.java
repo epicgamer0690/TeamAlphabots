@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -15,6 +16,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+@Disabled
 @TeleOp(name="OpenCV Test", group="Training")
 public class SkystoneDeterminationExample extends LinearOpMode
 {
@@ -302,6 +304,7 @@ public class SkystoneDeterminationExample extends LinearOpMode
             else if(max == avg3) // Was it from region 3?
             {
                 position = SkystonePosition.RIGHT; // Record our analysis
+                
 
                 /*
                  * Draw a solid rectangle on top of the chosen region.

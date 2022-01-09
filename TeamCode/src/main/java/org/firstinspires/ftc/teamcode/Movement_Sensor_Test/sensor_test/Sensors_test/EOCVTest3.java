@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -24,6 +25,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * 100% accurate) method of detecting the skystone when lined up with
  * the sample regions over the first 3 stones.
  */
+@Disabled
 @Autonomous(name="EOCVTest3", group="Training")
 public class EOCVTest3 extends LinearOpMode
 {

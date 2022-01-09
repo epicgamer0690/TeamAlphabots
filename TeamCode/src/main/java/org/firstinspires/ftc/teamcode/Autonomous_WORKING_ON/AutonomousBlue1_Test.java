@@ -1,11 +1,32 @@
-package org.firstinspires.ftc.teamcode.Autonomous_WORKING;
-//parsh is bad
+package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
+/*
+ * Copyright (c) 2021 OpenFTC Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,14 +36,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample;
 
-@Autonomous(name = "Autonomous_Blue2_12/11/21", group = "Training")
-public class AutoMinus_Blue2 extends LinearOpMode {
+/*
+ * This sample demonstrates how to run analysis during INIT
+ * and then snapshot that value for later use when the START
+ * command is issued. The pipeline is re-used from SkystoneDeterminationExample
+ */
+@Disabled
+@Autonomous(name="AutonomousBlue1_Test", group="Training")
+public class AutonomousBlue1_Test extends LinearOpMode
+{
     DcMotor leftWheel;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
@@ -32,17 +60,26 @@ public class AutoMinus_Blue2 extends LinearOpMode {
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
     BNO055IMU imu;
+    boolean isStopRequested = false;
+    double drivePower = 0.5;
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
     OpenCvWebcam webcam;
+    //1 rotation = 360
     SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
     SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
 
-
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
+        /**
+         * NOTE: Many comments have been omitted from this sample for the
+         * sake of conciseness. If you're just starting out with EasyOpenCv,
+         * you should take a look at {@link InternalCamera1Example} or its
+         * webcam counterpart, {@link WebcamExample} first.
+         */
         leftWheel = hardwareMap.dcMotor.get("left_wheel");
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
@@ -61,12 +98,6 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
         //initializing the IMU and setting the units needed
-        leftWheel.setDirection(DcMotor.Direction.REVERSE);
-        backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-        intakeServo.setDirection(CRServo.Direction.REVERSE);
-        setZeroPowerBehaiv();
-        setAllMotorPowers(0);
-        // Initializing the camera
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
@@ -84,6 +115,10 @@ public class AutoMinus_Blue2 extends LinearOpMode {
             public void onError(int errorCode) {}
         });
 
+        /*
+         * The INIT-loop:
+         * This REPLACES waitForStart!
+         */
         while (!isStarted() && !isStopRequested())
         {
             telemetry.addData("Realtime analysis", pipeline.getAnalysis());
@@ -92,66 +127,124 @@ public class AutoMinus_Blue2 extends LinearOpMode {
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
-        int level = 0;
 
+        /*
+         * The START command just came in: snapshot the current analysis now
+         * for later use. We must do this because the analysis will continue
+         * to change as the camera view changes once the robot starts moving!
+         */
         snapshotAnalysis = pipeline.getAnalysis();
 
+        /*
+         * Show that snapshot on the telemetry
+         */
         telemetry.addData("Snapshot post-START analysis", snapshotAnalysis);
         telemetry.update();
 
-        switch(snapshotAnalysis) { // Determine which level it is on in init
-            case LEFT:
-                level = 3;
-                break;
-            case RIGHT:
-                level = 1;
-                break;
-            case CENTER:
-                level = 2;
-                break;
-
-        }
-
-
-
         waitForStart();
+        switch (snapshotAnalysis)
+        {
+            case LEFT:
+            {
+                while(opModeIsActive()) {
+                    shippingHubLevel(65, 1);
+                    sleep(250);
+                    encoderMovement(10, 1, 0.2); // Drive forward 10 cm
+                    turnRight(30);
+                    sleep(250);
+                    encoderMovement(60, 1, 0.2);
+                    sleep(250);
+                    intakeServo.setPower(2);
+                    sleep(3000);
+                    intakeServo.setPower(0);
+                    sleep(1000);
+                    encoderMovement(20, 2, 0.2);
+                    shippingHubLevel(65, 0.2);
+                    sleep(250);
+                    turnRight(-30);
+                    encoderMovement(100, 4, 0.2);
+                    encoderMovement(20, 2, 0.2);
+                    carouselFunc();
+                    sleep(250);
+                    shippingHubLevel(65, 0.2);
+                    sleep(250);
+                    encoderMovement(45, 1, 0.2);
+                    break;
+                }
 
-        while (opModeIsActive()) {
-            encoderMovement(10, 1, 0.5);
-            turnRight(-30);
-            goToShippingHubLevel(level);
-            sleep(250);
-            encoderMovement(50, 1, 0.5);
-            sleep(250);
-            intakeServo.setPower(2);
-            sleep(3000);
-            intakeServo.setPower(0);
-            sleep(250);
-            encoderMovement(10, 2, 0.5);
-            sleep(250);
-            turnRight(120);
-            encoderMovement(20, 2, 0.5);
-            encoderMovement(100, 1, 1);
-            break;
 
+            }
+            case RIGHT:
+            {
+                while(opModeIsActive()) {
+                    shippingHubLevel(155, 1);
+                    sleep(250);
+                    encoderMovement(10, 1, 0.2); // Drive forward 10 cm
+                    turnRight(30);
+                    sleep(250);
+                    encoderMovement(60, 1, 0.2);
+                    sleep(250);
+                    intakeServo.setPower(2);
+                    sleep(3000);
+                    intakeServo.setPower(0);
+                    sleep(1000);
+                    encoderMovement(20, 2, 0.2);
+                    shippingHubLevel(65, 0.2);
+                    sleep(250);
+                    turnRight(-30);
+                    encoderMovement(100, 4, 0.2);
+                    encoderMovement(20, 2, 0.2);
+                    carouselFunc();
+                    sleep(250);
+                    shippingHubLevel(65, 0.2);
+                    sleep(250);
+                    encoderMovement(45, 1, 0.2);
+                    break;
+                }
+
+            }
+
+            case CENTER:
+            {
+                while(opModeIsActive()) {
+                    shippingHubLevel(115, 1);
+                    sleep(250);
+                    encoderMovement(10, 1, 0.2); // Drive forward 10 cm
+                    turnRight(30);
+                    sleep(250);
+                    encoderMovement(60, 1, 0.2);
+                    sleep(250);
+                    intakeServo.setPower(2);
+                    sleep(3000);
+                    intakeServo.setPower(0);
+                    sleep(1000);
+                    encoderMovement(20, 2, 0.2);
+                    shippingHubLevel(65, 0.2);
+                    sleep(250);
+                    turnRight(-30);
+                    encoderMovement(100, 4, 0.2);
+                    encoderMovement(20, 2, 0.2);
+                    carouselFunc();
+                    sleep(250);
+                    shippingHubLevel(65, 0.2);
+                    sleep(250);
+                    encoderMovement(45, 1, 0.2);
+                    break;
+                }
+
+            }
+        }
+
+
+
+
+        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
+        while (opModeIsActive())
+        {
+            // Don't burn CPU cycles busy-looping in this sample
+            sleep(50);
         }
     }
-    public void goToShippingHubLevel(int level) {
-        switch(level) {
-            case 1:
-                shippingHubLevel(65, 1);
-                break;
-            case 2:
-                shippingHubLevel(115, 1);
-                break;
-            case 3:
-                shippingHubLevel(165, 1);
-                break;
-        }
-    }
-
-
-
     public void encoderMovement(double distance, int direction, double power) {
 
         resetEncoders();
@@ -201,7 +294,7 @@ public class AutoMinus_Blue2 extends LinearOpMode {
     }
 
     public void carouselFunc() {
-        carouselMotor.setPower(0.7);
+        carouselMotor.setPower(0.5);
         sleep(2000);
         carouselMotor.setPower(0);
     }
@@ -387,6 +480,5 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-
 }
 

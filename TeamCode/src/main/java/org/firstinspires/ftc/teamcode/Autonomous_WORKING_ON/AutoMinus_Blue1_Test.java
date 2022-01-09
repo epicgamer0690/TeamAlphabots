@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,6 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         carouselFunc(1)
         forwards(2)
          */
+@Disabled
 @Autonomous(name="AutoMinus_Blue1_Test", group="Training")
 public class AutoMinus_Blue1_Test extends LinearOpMode {
 

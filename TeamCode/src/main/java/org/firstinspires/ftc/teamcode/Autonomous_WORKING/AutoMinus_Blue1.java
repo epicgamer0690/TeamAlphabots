@@ -94,7 +94,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
         intakeServo.setDirection(CRServo.Direction.REVERSE);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        // armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
         int level = 0;
@@ -122,29 +122,23 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            shippingHubLevel(45, 1); // Raise arm to cruising level
-            sleep(250);
+
             encoderMovement(10, 1, 0.2); // Drive forward 10 cm
-            turnRight(30);
+            turnRight(35);
             goToShippingHubLevel(level);
             sleep(250);
             encoderMovement(60, 1, 0.2);
             sleep(250);
-            intakeServo.setPower(0);
-            sleep(125);
             intakeServo.setPower(2);
-            sleep(5000);
+            sleep(3000);
             intakeServo.setPower(0);
-            sleep(1);
-            encoderMovement(20, 2, 0.2);
-            shippingHubLevel(65, 0.2);
             sleep(250);
-            turnRight(-30);
+            encoderMovement(20, 2, 0.2);
+            sleep(250);
+            turnRight(-35);
             encoderMovement(100, 4, 0.2);
-            encoderMovement(20, 2, 0.2);
+            encoderMovement(25, 2, 0.2);
             carouselFunc();
-            sleep(250);
-            shippingHubLevel(65, 0.2);
             sleep(250);
             encoderMovement(45, 1, 0.2);
 
@@ -155,6 +149,9 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     }
     public void goToShippingHubLevel(int level) {
         switch(level) {
+            case 0:
+                shippingHubLevel(220, 1);
+                break;
             case 1:
                 shippingHubLevel(65, 1);
                 break;

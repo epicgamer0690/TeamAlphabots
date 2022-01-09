@@ -20,6 +20,7 @@ package org.firstinspires.ftc.teamcode.Autonomous_WORKING;
  * SOFTWARE.
  */
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -35,6 +36,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * and then snapshot that value for later use when the START
  * command is issued. The pipeline is re-used from SkystoneDeterminationExample
  */
+@Disabled
 @TeleOp
 public class AutoMinusTeest extends LinearOpMode
 {

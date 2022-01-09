@@ -100,7 +100,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
-        intakeServo.setDirection(CRServo.Direction.REVERSE);
 
         leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -112,8 +111,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void loop() {
         moveDriveTrain();
+        outtakeFunc();
         intakeFunc();
-        outakeFunc();
         setButtons();
         carouselFunc(0.3);
 
@@ -121,28 +120,29 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     public void setButtons(){
         if(gamepad1.dpad_left){
-            shippingHubLevel(65);
+            shippingHubLevel(65, 1);
         }
         if(gamepad1.dpad_right){
-            shippingHubLevel(115 );
+            shippingHubLevel(115, 1 );
         }
         if(gamepad1.dpad_up){
-            shippingHubLevel(150);
+            shippingHubLevel(155, 1);
         }
         if(gamepad1.dpad_down){
-            shippingHubLevel(65);
-            shippingHubLevel(30);
-            shippingHubLevel(10);
+            shippingHubLevel(65, 0.2);
+            shippingHubLevel(30, 0.2);
+            shippingHubLevel(0, 0.2);
         }
     }
-    public void shippingHubLevel(int rotation) {
+    public void shippingHubLevel(int rotation, double power) {
         armMotor.setTargetPosition(rotation);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(1);
+        armMotor.setPower(power);
     }
 
     public void carouselFunc(double power){
         if(gamepad1.cross) {
+
             carouselMotor.setPower(power);
 
         } else {
@@ -150,18 +150,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         }
     }
 
-    public void intakeFunc() {
+    public void outtakeFunc() {
         if (gamepad1.left_bumper) {
-            intakeServo.setPower(1);
+            intakeServo.setDirection(CRServo.Direction.FORWARD);
+            intakeServo.setPower(2);
         }
         else{
             intakeServo.setPower(0);
         }
     }
 
-    public void outakeFunc(){
+    public void intakeFunc(){
         if(gamepad1.right_bumper) {
-            intakeServo.setPower(-1);
+            intakeServo.setDirection(CRServo.Direction.REVERSE);
+            intakeServo.setPower(2);
         }
         else{
             intakeServo.setPower(0);

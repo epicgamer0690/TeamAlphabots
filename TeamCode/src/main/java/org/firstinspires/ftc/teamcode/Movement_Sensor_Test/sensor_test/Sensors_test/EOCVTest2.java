@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -23,6 +24,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+@Disabled
 @Autonomous(name = "EOCVTest1", group = "Training")
 public class EOCVTest2 extends LinearOpMode
 {

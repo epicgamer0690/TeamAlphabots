@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+@Disabled
 @Autonomous(name="TouchSensorTest", group="Training")
     public class TouchSensorTest extends OpMode {
 
