@@ -152,7 +152,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     public void intakeFunc() {
         if (gamepad1.left_bumper) {
-            intakeServo.setPower(1);
+            intakeServo.setPower(2);
         }
         else{
             intakeServo.setPower(0);
