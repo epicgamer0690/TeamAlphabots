@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.TeleOp_WORKING;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="TeleOpTest_RoboCentric", group="Training")
-    public class TeleOpTest extends OpMode {
+@TeleOp(name="TeleOpTest_OLD", group="Training")
+    public class TeleOpTest_OLD extends OpMode {
 
 
 
@@ -50,20 +48,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
     public void moveDriveTrain() {
-        double driveForward = 0; //Moves forwards and backwards
-        double driveBackward = 0;
-        double strafe = 0; //Move side-to-side
-        double rotate = 0;
-        double drive = 0;
-        double denominator = 1;
 
-        driveForward = gamepad1.right_trigger;
-        driveBackward = gamepad1.left_trigger;
-        drive = gamepad1.left_stick_y;
+        double vertical = -gamepad1.left_stick_y;
+        double peevot = gamepad1.left_stick_x;
+        double horizontal = gamepad1.right_stick_x;
+        double driveForward = gamepad1.right_trigger;
+        double driveBackward = gamepad1.left_trigger;
 
-        strafe = gamepad1.left_stick_x * 1.1;
-        rotate = gamepad1.right_stick_x;
-        denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(rotate), 1);
         if(driveForward > 0) {
             rightWheel.setPower(-driveForward);
             backRightWheel.setPower(-driveForward);
@@ -75,17 +66,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             leftWheel.setPower(driveBackward);
             backLeftWheel.setPower(driveBackward);
 
-        } else if(strafe > 0){
-            rightWheel.setPower((drive + strafe) / denominator);
-            backRightWheel.setPower((drive + strafe) / denominator);
-            leftWheel.setPower((drive - strafe) / denominator);
-            backLeftWheel.setPower((drive - strafe) / denominator);
         }
         else {
-            rightWheel.setPower((drive + strafe + rotate) / denominator);
-            backRightWheel.setPower((drive - rotate + strafe) / denominator);
-            leftWheel.setPower((drive - rotate - strafe) / denominator);
-            backLeftWheel.setPower((drive + rotate - strafe) / denominator);
+            rightWheel.setPower(peevot + (-vertical + horizontal));
+            backRightWheel.setPower(peevot + (-vertical - horizontal));
+            leftWheel.setPower(peevot + (-vertical - horizontal));
+            backLeftWheel.setPower(peevot + (-vertical + horizontal));
         }
 
         spin();
