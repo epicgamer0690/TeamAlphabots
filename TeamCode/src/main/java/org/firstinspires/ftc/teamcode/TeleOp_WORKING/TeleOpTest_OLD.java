@@ -50,8 +50,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     public void moveDriveTrain() {
 
         double vertical = -gamepad1.left_stick_y;
-        double peevot = gamepad1.left_stick_x;
-        double horizontal = gamepad1.right_stick_x;
+        double horizontal = gamepad1.left_stick_x;
+        double peevot = gamepad1.right_stick_x;
         double driveForward = gamepad1.right_trigger;
         double driveBackward = gamepad1.left_trigger;
 
