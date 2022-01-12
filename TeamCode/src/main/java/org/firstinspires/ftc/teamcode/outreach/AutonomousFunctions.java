@@ -178,12 +178,12 @@ public class AutonomousFunctions extends LinearOpMode {
     public void turnRight() {
         setRWE();
         resetAngle();
-        double error = 90;
+        double error = -90;
 
         while (opModeIsActive() && Math.abs(error) > 2) {
             double motorPower = (error < 0 ? -0.3 : 0.3);
             setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
-            error = 90 - getAngle();
+            error = -90 - getAngle();
 
             telemetry.addData("error", error);
             telemetry.addData("angle", currAngle);
