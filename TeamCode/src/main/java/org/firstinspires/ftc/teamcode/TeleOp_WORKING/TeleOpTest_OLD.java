@@ -102,10 +102,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void loop() {
         moveDriveTrain();
-        setButtons();
-    }
-
-    public void setButtons(){
         if(gamepad1.dpad_right){
             shippingHubLevel(65, 1);
         }
