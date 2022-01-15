@@ -26,73 +26,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
     private ElapsedTime runtime= new ElapsedTime();
 
-
-
-
-    public void spin() {
-        double pivot = 0;
-        pivot = gamepad1.right_stick_y;;
-        if(pivot < 0) {
-            rightWheel.setPower(-pivot);
-            backRightWheel.setPower(-pivot);
-            leftWheel.setPower(pivot);
-            backLeftWheel.setPower(pivot);
-        }
-        if(pivot > 0) {
-            rightWheel.setPower(-pivot);
-            backRightWheel.setPower(-pivot);
-            leftWheel.setPower(pivot);
-            backLeftWheel.setPower(pivot);
-        }
-    }
-
-
-
-
-    public void moveDriveTrain() {
-        double driveForward = 0; //Moves forwards and backwards
-        double driveBackward = 0;
-        double strafe = 0; //Move side-to-side
-        double rotate = 0;
-        double drive = 0;
-        double denominator = 1;
-
-        driveForward = gamepad1.right_trigger;
-        driveBackward = gamepad1.left_trigger;
-        drive = gamepad1.left_stick_y;
-
-        strafe = gamepad1.left_stick_x * 1.1;
-        rotate = gamepad1.right_stick_x;
-        denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(rotate), 1);
-        if(driveForward > 0) {
-            rightWheel.setPower(-driveForward);
-            backRightWheel.setPower(-driveForward);
-            leftWheel.setPower(-driveForward);
-            backLeftWheel.setPower(-driveForward);
-        } else if(driveBackward > 0) {
-            rightWheel.setPower(driveBackward);
-            backRightWheel.setPower(driveBackward);
-            leftWheel.setPower(driveBackward);
-            backLeftWheel.setPower(driveBackward);
-
-        } else if(strafe > 0){
-            rightWheel.setPower((drive + strafe) / denominator);
-            backRightWheel.setPower((drive + strafe) / denominator);
-            leftWheel.setPower((drive - strafe) / denominator);
-            backLeftWheel.setPower((drive - strafe) / denominator);
-        }
-        else {
-            rightWheel.setPower((drive + strafe + rotate) / denominator);
-            backRightWheel.setPower((drive - rotate + strafe) / denominator);
-            leftWheel.setPower((drive - rotate - strafe) / denominator);
-            backLeftWheel.setPower((drive + rotate - strafe) / denominator);
-        }
-
-        spin();
-    }
-
-
-
     @Override
     public void init() {
         leftWheel = hardwareMap.dcMotor.get("left_wheel");
@@ -139,10 +72,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         } else {
             carouselMotor.setPower(0);
         }
-        if (gamepad1.left_bumper) {
+        if (gamepad1.right_bumper) {
             intakeServo.setPower(2);
         }
-        else if(gamepad1.right_bumper){
+        else if(gamepad1.left_bumper){
             intakeServo.setPower(-2);
         }
         else{
@@ -155,34 +88,39 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         armMotor.setPower(power);
     }
 
-    /*
-    public void accelerate(){
-        if(gamepad2.right_bumper == true){
-            drivePower = drivePower + 0.25;
-        }
-        else{
-            drivePower = 0.5;
+    public void moveDriveTrain() {
+        double driveForward = 0; //Moves forwards and backwards
+        double driveBackward = 0;
+        double strafe = 0; //Move side-to-side
+        double rotate = 0;
+        double drive = 0;
+        double denominator = 1;
+
+        drive = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x * 1.1;
+        rotate = gamepad1.right_stick_x;
+
+        driveForward = gamepad1.right_trigger;
+        driveBackward = gamepad1.left_trigger;
+
+        denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(rotate), 1);
+        if(driveForward > 0) {
+            rightWheel.setPower(-driveForward);
+            backRightWheel.setPower(-driveForward);
+            leftWheel.setPower(-driveForward);
+            backLeftWheel.setPower(-driveForward);
+        } else if(driveBackward > 0) {
+            rightWheel.setPower(driveBackward);
+            backRightWheel.setPower(driveBackward);
+            leftWheel.setPower(driveBackward);
+            backLeftWheel.setPower(driveBackward);
+
+        } else {
+            rightWheel.setPower((drive + strafe + rotate) / denominator);
+            backRightWheel.setPower((drive - rotate + strafe) / denominator);
+            leftWheel.setPower((drive - rotate - strafe) / denominator);
+            backLeftWheel.setPower((drive + rotate - strafe) / denominator);
         }
     }
-    public void deccelerate(){
-        if(gamepad2.left_bumper == true){
-            drivePower = drivePower - 0.25;
-        }
-        else{
-            drivePower = 0.5;
-        }
-    }
-
-
-    public void stopMotors(){
-        if(gamepad2.square == true){
-            drivePower = 0;
-        }
-        else{
-            drivePower = 0.5;
-        }
-    }
-
-     */
 
 }

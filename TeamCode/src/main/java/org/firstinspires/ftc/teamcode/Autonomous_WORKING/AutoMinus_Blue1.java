@@ -244,24 +244,16 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         return currAngle;
     }
 
+
     public void turnLeft(double degrees) {
         setRWE();
         resetAngle();
         double error = degrees;
-
         while (opModeIsActive() && Math.abs(error) > 2) {
             double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(motorPower, -motorPower, motorPower, -motorPower);
+            setMotorPowers(motorPower, -motorPower,
+                    motorPower, -motorPower);
             error = degrees - getAngle();
-
-            telemetry.addData("error", error);
-            telemetry.addData("angle", currAngle);
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", currAngle);
-            telemetry.addData("3 correction", error);
-            telemetry.update();
-
-
         }
         setAllMotorPowers(0);
     }
@@ -269,23 +261,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     public void turnRight(double degrees) {
         setRWE();
         resetAngle();
-        double error = degrees;
-
-        while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
-            error = degrees - getAngle();
-
-            telemetry.addData("error", error);
-            telemetry.addData("angle", currAngle);
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", currAngle);
-            telemetry.addData("3 correction", error);
-            telemetry.update();
-
-
-        }
-        setAllMotorPowers(0);
+        turnLeft(-degrees);
     }
 
     public void forward(double degrees, double fl, double fr, double bl, double br) {
