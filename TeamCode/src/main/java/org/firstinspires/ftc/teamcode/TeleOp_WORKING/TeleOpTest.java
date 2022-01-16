@@ -67,10 +67,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         }
         if(gamepad1.cross) {
 
-            carouselMotor.setPower(0.3);
+            carouselMotor.setPower(0.69);
 
         } else {
             carouselMotor.setPower(0);
+        }
+        if(gamepad1.circle){
+            carouselMotor.setPower(0.5);
+            sleep(500);
+            carouselMotor.setPower(1);
+            sleep(1000);
+            carouselMotor.setPower(0);
+
+
         }
         if (gamepad1.right_bumper) {
             intakeServo.setPower(2);
@@ -120,6 +129,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             backRightWheel.setPower((drive - rotate + strafe) / denominator);
             leftWheel.setPower((drive - rotate - strafe) / denominator);
             backLeftWheel.setPower((drive + rotate - strafe) / denominator);
+        }
+    }
+    public void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
