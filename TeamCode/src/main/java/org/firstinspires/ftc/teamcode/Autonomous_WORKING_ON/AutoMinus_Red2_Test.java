@@ -21,7 +21,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Autonomous_Blue2_12/11/21", group = "Training")
+@Autonomous(name = "Autonomous_Red2", group = "Training")
 public class AutoMinus_Red2_Test extends LinearOpMode {
     DcMotor leftWheel;
     DcMotor rightWheel;
