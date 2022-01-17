@@ -75,7 +75,7 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
         while (opModeIsActive()) {
 
             encoderMovement(10, 1, 0.2); // Drive forward 10 cm
-            turnRight(35);
+            turn(35);
             goToShippingHubLevel(level);
             sleep(250);
             encoderMovement(60, 1, 0.2);
@@ -86,7 +86,7 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
             sleep(250);
             encoderMovement(20, 2, 0.2);
             sleep(250);
-            turnRight(-35);
+            turn(-35);
             encoderMovement(100, 4, 0.2);
             encoderMovement(25, 2, 0.2);
             carouselFunc();
@@ -195,34 +195,14 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
     }
 
 
-    public void turnLeft(double degrees) {
+    public void turn(double degrees) {
         setRWE();
         resetAngle();
         double error = degrees;
-        while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(motorPower, -motorPower,
-                    motorPower, -motorPower);
-            error = degrees - getAngle();
-        }
-        setAllMotorPowers(0);
-    }
-
-    public void turnRight(double degrees) {
-        setRWE();
-        resetAngle();
-        turnLeft(-degrees);
-    }
-
-    public void forward(double degrees, double fl, double fr, double bl, double br) {
-
-        resetAngle();
-        double error = degrees;
-        runtime.startTime();
 
         while (opModeIsActive() && Math.abs(error) > 2) {
             double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(fl, fr, bl, br);
+            setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
             error = degrees - getAngle();
 
             telemetry.addData("error", error);
@@ -235,20 +215,6 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
 
         }
         setAllMotorPowers(0);
-    }
-
-    public void turnTo(double degrees) {
-        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double error = degrees - orientation.firstAngle;
-
-        if (error > 180) {
-            error -= 360;
-        } else if (error < -180) {
-            error += 360;
-        }
-
-        turnLeft(error);
-
     }
 
     public void shippingHubLevel(int rotation, double pwr) {

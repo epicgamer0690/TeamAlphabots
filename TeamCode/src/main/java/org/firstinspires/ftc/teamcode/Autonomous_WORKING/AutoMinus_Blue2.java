@@ -118,7 +118,7 @@ public class AutoMinus_Blue2 extends LinearOpMode {
 
         while (opModeIsActive()) {
             encoderMovement(10, 1, 0.5);
-            turnRight(-30);
+            turn(-30);
             goToShippingHubLevel(level);
             sleep(250);
             encoderMovement(50, 1, 0.5);
@@ -129,7 +129,7 @@ public class AutoMinus_Blue2 extends LinearOpMode {
             sleep(250);
             encoderMovement(10, 2, 0.5);
             sleep(250);
-            turnRight(120);
+            turn(120);
             encoderMovement(20, 2, 0.5);
             encoderMovement(50, 3, 0.5);
             encoderMovement(100, 1, 0.5);
@@ -232,29 +232,7 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         return currAngle;
     }
 
-    public void turnLeft(double degrees) {
-        setRWE();
-        resetAngle();
-        double error = degrees;
-
-        while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(motorPower, -motorPower, motorPower, -motorPower);
-            error = degrees - getAngle();
-
-            telemetry.addData("error", error);
-            telemetry.addData("angle", currAngle);
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", currAngle);
-            telemetry.addData("3 correction", error);
-            telemetry.update();
-
-
-        }
-        setAllMotorPowers(0);
-    }
-
-    public void turnRight(double degrees) {
+    public void turn(double degrees) {
         setRWE();
         resetAngle();
         double error = degrees;
@@ -299,19 +277,6 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         setAllMotorPowers(0);
     }
 
-    public void turnTo(double degrees) {
-        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double error = degrees - orientation.firstAngle;
-
-        if (error > 180) {
-            error -= 360;
-        } else if (error < -180) {
-            error += 360;
-        }
-
-        turnLeft(error);
-
-    }
 
     public void shippingHubLevel(int rotation, double pwr) {
         resetEncoders();
