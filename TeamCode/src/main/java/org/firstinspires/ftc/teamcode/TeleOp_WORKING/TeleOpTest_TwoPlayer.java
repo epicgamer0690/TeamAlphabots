@@ -47,10 +47,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
     @Override
     public void loop() {
         moveDriveTrain();
-        if(gamepad2.dpad_right){
+        if(gamepad2.dpad_left){
             shippingHubLevel(65, 1);
         }
-        if(gamepad2.dpad_left){
+        if(gamepad2.dpad_right){
             shippingHubLevel(115, 1 );
         }
         if(gamepad2.dpad_up){
