@@ -125,25 +125,25 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            encoderMovement(10, 1, 0.2); // Drive forward 10 cm
-            turn(-35);
+            encoderMovement(10, 1, 0.5); // Drive forward 10 cm
+            turnRight(-30);
             shippingHubLevel(165, 1);
             //goToShippingHubLevel(level);
             sleep(250);
-            encoderMovement(60, 1, 0.2);
+            encoderMovement(50, 1, 0.5);
             sleep(250);
             intakeServo.setPower(2);
             sleep(3000);
             intakeServo.setPower(0);
             sleep(250);
-            encoderMovement(20, 2, 0.2);
+            encoderMovement(20, 2, 0.5);
             sleep(250);
-            turn(35);
-            encoderMovement(100, 4, 0.2);
-            encoderMovement(25, 2, 0.2);
-            carouselFunc();
+            turnRight(-55);
+            encoderMovement(90, 2, 0.5);
+            encoderMovement(40, 4, 0.5);
+            carouselFunc(-0.5);
             sleep(250);
-            encoderMovement(45, 1, 0.2);
+            encoderMovement(65, 3, 0.5);
 
 
             break;
@@ -216,8 +216,8 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         resetEncoders();
     }
 
-    public void carouselFunc() {
-        carouselMotor.setPower(0.5);
+    public void carouselFunc(double pwr) {
+        carouselMotor.setPower(pwr);
         sleep(2000);
         carouselMotor.setPower(0);
     }
@@ -247,14 +247,34 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
     }
 
 
-    public void turn(double degrees) {
+    public void turnLeft(double degrees) {
         setRWE();
         resetAngle();
         double error = degrees;
+        while (opModeIsActive() && Math.abs(error) > 2) {
+            double motorPower = (error < 0 ? -0.3 : 0.3);
+            setMotorPowers(motorPower, -motorPower,
+                    motorPower, -motorPower);
+            error = degrees - getAngle();
+        }
+        setAllMotorPowers(0);
+    }
+
+    public void turnRight(double degrees) {
+        setRWE();
+        resetAngle();
+        turnLeft(-degrees);
+    }
+
+    public void forward(double degrees, double fl, double fr, double bl, double br) {
+
+        resetAngle();
+        double error = degrees;
+        runtime.startTime();
 
         while (opModeIsActive() && Math.abs(error) > 2) {
             double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
+            setMotorPowers(fl, fr, bl, br);
             error = degrees - getAngle();
 
             telemetry.addData("error", error);
@@ -267,6 +287,20 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
 
         }
         setAllMotorPowers(0);
+    }
+
+    public void turnTo(double degrees) {
+        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double error = degrees - orientation.firstAngle;
+
+        if (error > 180) {
+            error -= 360;
+        } else if (error < -180) {
+            error += 360;
+        }
+
+        turnLeft(error);
+
     }
 
     public void shippingHubLevel(int rotation, double pwr) {
