@@ -61,9 +61,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         }
         if(gamepad2.cross) {
 
-            carouselMotor.setPower(0.3);
+            carouselMotor.setPower(0.69);
 
-        } else {
+        } else if(gamepad2.circle){
+
+            carouselMotor.setPower(-0.69);
+        }
+        else {
             carouselMotor.setPower(0);
         }
         if (gamepad1.right_bumper) {
