@@ -20,6 +20,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
+import java.util.Random;
 
 
 
@@ -151,7 +152,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     public void goToShippingHubLevel(int level) {
         switch(level) {
             case 0:
-                shippingHubLevel(220, 1);
+                goToShippingHubLevel(getRandomNumberInRange(1, 3));
                 break;
             case 1:
                 shippingHubLevel(65, 1);
@@ -163,6 +164,15 @@ public class AutoMinus_Blue1 extends LinearOpMode {
                 shippingHubLevel(165, 1);
                 break;
         }
+    }
+    private static int getRandomNumberInRange(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
     }
 
 

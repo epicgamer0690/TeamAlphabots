@@ -64,6 +64,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         }
         if(gamepad1.dpad_down){
             shippingHubLevel(0, 0.2);
+
         }
         if(gamepad1.cross) {
 
@@ -137,6 +138,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void resetEncoders() {
+        leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 }

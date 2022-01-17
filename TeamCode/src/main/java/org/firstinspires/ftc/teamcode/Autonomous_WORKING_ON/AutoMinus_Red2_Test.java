@@ -10,18 +10,12 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test.SkystoneDeterminationExample;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Autonomous_Blue2_12/11/21", group = "Training")
+@Autonomous(name = "Autonomous_Red2_Test", group = "Training")
 public class AutoMinus_Red2_Test extends LinearOpMode {
     DcMotor leftWheel;
     DcMotor rightWheel;
@@ -36,10 +30,6 @@ public class AutoMinus_Red2_Test extends LinearOpMode {
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
-    /*OpenCvWebcam webcam;
-    SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
-    SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
-*/
 
     @Override
     public void runOpMode() {
@@ -66,59 +56,13 @@ public class AutoMinus_Red2_Test extends LinearOpMode {
         intakeServo.setDirection(CRServo.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
-        // Initializing the camera
-        /*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
-        webcam.setPipeline(pipeline);
-
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {}
-        });
-
-        while (!isStarted() && !isStopRequested())
-        {
-            telemetry.addData("Realtime analysis", pipeline.getAnalysis());
-            telemetry.update();
-
-            // Don't burn CPU cycles busy-looping in this sample
-            sleep(50);
-        }*/
         int level = 3;
-
-        /*snapshotAnalysis = pipeline.getAnalysis();
-
-        telemetry.addData("Snapshot post-START analysis", snapshotAnalysis);
-        telemetry.update();
-
-        switch(snapshotAnalysis) { // Determine which level it is on in init
-            case LEFT:
-                level = 3;
-                break;
-            case RIGHT:
-                level = 1;
-                break;
-            case CENTER:
-                level = 2;
-                break;
-
-        }w
-        */
-
 
         waitForStart();
 
         while (opModeIsActive()) {
             encoderMovement(10, 1, 0.5);
-            turnRight(30);
+            turnRight(33);
             goToShippingHubLevel(level);
             sleep(250);
             encoderMovement(50, 1, 0.5);
@@ -129,11 +73,12 @@ public class AutoMinus_Red2_Test extends LinearOpMode {
             sleep(250);
             encoderMovement(10, 2, 0.5);
             sleep(250);
+            shippingHubLevel(0, 0.2);
+            sleep(250);
             turnRight(-120);
-            encoderMovement(20, 2, 0.5);
-            encoderMovement(50, 4, 0.5);
+            encoderMovement(60, 4, 0.5);
             encoderMovement(100, 1, 0.5);
-            encoderMovement(20, 3, 0.5);
+            encoderMovement(70, 3, 0.5);
             break;
 
         }
