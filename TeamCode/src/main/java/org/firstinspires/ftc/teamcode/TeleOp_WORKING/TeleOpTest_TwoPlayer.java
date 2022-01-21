@@ -7,6 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 @TeleOp(name="TeleOpTest_TwoPlayer", group="Training")
     public class TeleOpTest_TwoPlayer extends OpMode {
 
@@ -36,6 +41,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
+
+        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -80,6 +90,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
         else{
             intakeServo.setPower(0);
         }
+        if(gamepad1.cross) {
+
+            encoderMovement(100, 2, 0.5);
+
+        }
     }
 
     public void shippingHubLevel(int rotation, double power) {
@@ -122,5 +137,113 @@ import com.qualcomm.robotcore.util.ElapsedTime;
             backLeftWheel.setPower((drive + rotate - strafe) / denominator);
         }
     }
+    public void encoderMovement(double distance, int direction, double power) {
+
+        resetEncoders();
+        setRUE();
+
+        leftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        final double ENCODER_TPR = 537.6;
+        final double GEAR_RATIO = 1;
+        final double WHEEL_DIAMETER = 9.6;
+        final double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+        final double ROTATIONS = distance / CIRCUMFERENCE;
+        double ticks = ENCODER_TPR * ROTATIONS * GEAR_RATIO;
+
+        switch (direction) {
+            case 1: // robot will move forward
+                setTargetPositionCounts(ticks, ticks, ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 2: // robot will move backward
+                setTargetPositionCounts(-ticks, -ticks, -ticks, -ticks);
+                setAllMotorPowers(power);
+
+                break;
+            case 3: // robot will strafe left
+                setTargetPositionCounts(-ticks, ticks, ticks, -ticks);
+                setAllMotorPowers(power);
+                break;
+            case 4: // robot will strafe right
+                setTargetPositionCounts(ticks, -ticks, -ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 5: // robot will rotate left
+                setTargetPositionCounts(-ticks, ticks, -ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 6: // robot will rotate right
+                setTargetPositionCounts(ticks, -ticks, ticks, -ticks);
+                setAllMotorPowers(power);
+                break;
+        }
+
+        setRTP();
+
+        while (leftWheel.isBusy() && rightWheel.isBusy() && backLeftWheel.isBusy() && backRightWheel.isBusy()) {
+
+        }
+        resetEncoders();
+        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+
+
+    public void setAllMotorPowers(double power) {
+        leftWheel.setPower(power);
+        rightWheel.setPower(power);
+        backLeftWheel.setPower(power);
+        backRightWheel.setPower(power);
+    }
+
+    public void setMotorPowers(double lw, double rw, double bl, double br) {
+        leftWheel.setPower(lw);
+        rightWheel.setPower(rw);
+        backLeftWheel.setPower(bl);
+        backRightWheel.setPower(br);
+    }
+
+    public void setTargetPositionCounts(double fl_count, double fr_count, double bl_count, double br_count) {
+        leftWheel.setTargetPosition((int) fl_count);
+        rightWheel.setTargetPosition((int) fr_count);
+        backLeftWheel.setTargetPosition((int) bl_count);
+        backRightWheel.setTargetPosition((int) br_count);
+    }
+
+    public void resetEncoders() {
+        leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void setRTP() {
+        leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void setRUE() {
+        leftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void setZeroPowerBehaiv() {
+        leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
 
 }

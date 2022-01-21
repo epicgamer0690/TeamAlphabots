@@ -151,9 +151,6 @@ public class AutoMinus_Blue1 extends LinearOpMode {
     }
     public void goToShippingHubLevel(int level) {
         switch(level) {
-            case 0:
-                goToShippingHubLevel(getRandomNumberInRange(1, 3));
-                break;
             case 1:
                 shippingHubLevel(65, 1);
                 break;
@@ -165,15 +162,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
                 break;
         }
     }
-    private static int getRandomNumberInRange(int min, int max) {
 
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-
-        Random r = new Random();
-        return r.nextInt((max - min) + 1) + min;
-    }
 
 
     public void encoderMovement(double distance, int direction, double power) {
