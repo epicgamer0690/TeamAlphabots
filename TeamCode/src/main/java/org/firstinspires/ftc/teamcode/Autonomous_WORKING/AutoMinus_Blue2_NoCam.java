@@ -68,10 +68,10 @@ public class AutoMinus_Blue2_NoCam extends LinearOpMode {
 
         while (opModeIsActive()) {
             encoderMovement(10, 1, 0.5);
-            turn(-30);
+            turn(-33);
             goToShippingHubLevel(level);
             sleep(250);
-            encoderMovement(50, 1, 0.5);
+            encoderMovement(53, 1, 0.5);
             sleep(250);
             intakeServo.setPower(2);
             sleep(3000);
@@ -79,9 +79,10 @@ public class AutoMinus_Blue2_NoCam extends LinearOpMode {
             sleep(250);
             encoderMovement(10, 2, 0.5);
             sleep(250);
-            turn(120);
-            encoderMovement(20, 2, 0.5);
-            encoderMovement(100, 1, 1);
+            turn(123);
+            encoderMovement(60, 3, 0.5);
+            encoderMovement(90, 1, 0.5);
+            encoderMovement(60, 4, 0.5);
             break;
 
         }

@@ -98,7 +98,8 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         // armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
-        /*int level = 0;
+        int level = 3;
+        /*
 
         snapshotAnalysis = pipeline.getAnalysis();
 
@@ -125,25 +126,24 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            encoderMovement(10, 1, 0.2); // Drive forward 10 cm
-            turn(-35);
-            shippingHubLevel(165, 1);
-            //goToShippingHubLevel(level);
+            encoderMovement(10, 1, 0.5); // Drive forward 10 cm
+            turn(-33);
+            goToShippingHubLevel(level);
             sleep(250);
-            encoderMovement(60, 1, 0.2);
+            encoderMovement(53, 1, 0.5);
             sleep(250);
             intakeServo.setPower(2);
             sleep(3000);
             intakeServo.setPower(0);
             sleep(250);
-            encoderMovement(20, 2, 0.2);
+            encoderMovement(20, 2, 0.5);
             sleep(250);
-            turn(35);
-            encoderMovement(100, 4, 0.2);
-            encoderMovement(25, 2, 0.2);
-            carouselFunc();
+            turn(-57);
+            encoderMovement(90, 2, 0.5);
+            encoderMovement(40, 4, 0.5);
+            carouselFunc(-0.5);
             sleep(250);
-            encoderMovement(45, 1, 0.2);
+            encoderMovement(65, 3, 0.5);
 
 
             break;
@@ -216,8 +216,8 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         resetEncoders();
     }
 
-    public void carouselFunc() {
-        carouselMotor.setPower(0.5);
+    public void carouselFunc(double pwr) {
+        carouselMotor.setPower(pwr);
         sleep(2000);
         carouselMotor.setPower(0);
     }
@@ -245,7 +245,6 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         telemetry.update();
         return currAngle;
     }
-
 
     public void turn(double degrees) {
         setRWE();
