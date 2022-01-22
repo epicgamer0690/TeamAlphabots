@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Autonomous_WORKING.AutoMinus_Blue2;
 
-@TeleOp(name="TeleOpTest_TwoPlayer", group="Training")
-public class TeleOpTest_TwoPlayer extends OpMode {
+@TeleOp(name="TeleOpTest_CarouselDebug", group="Training")
+public class TeleOpTest_CarouselDebug extends OpMode {
 
 
 
@@ -30,6 +30,7 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     public boolean IsStopRequested = false;
+    static double pwr = 0.3;
 
     AutoMinus_Blue2 robot = new AutoMinus_Blue2();
     private ElapsedTime runtime= new ElapsedTime();
@@ -61,76 +62,20 @@ public class TeleOpTest_TwoPlayer extends OpMode {
 
     @Override
     public void loop() {
-        moveDriveTrain();
-        if(gamepad2.dpad_left){
-            shippingHubLevel(65, 1);
+        if(gamepad1.cross){
+            carouselMotor.setPower(pwr);
+            telemetry.addData("power", pwr);
+            telemetry.update();
         }
-        if(gamepad2.dpad_right){
-            shippingHubLevel(115, 1 );
+        if(gamepad1.dpad_up){
+            pwr += 0.1;
+            telemetry.addData("power", pwr);
+            telemetry.update();
         }
-        if(gamepad2.dpad_up){
-            shippingHubLevel(155, 1);
-        }
-        if(gamepad2.dpad_down){
-            shippingHubLevel(0, 0.2);
-
-        }
-        if(gamepad2.cross) {
-
-            carouselMotor.setPower(0.5);
-
-        } else if(gamepad2.circle){
-
-            carouselMotor.setPower(-0.5);
-        }
-        else {
-            carouselMotor.setPower(0);
-        }
-        if (gamepad1.right_bumper) {
-            intakeServo.setPower(1);
-        }
-        else if(gamepad1.left_bumper){
-            intakeServo.setPower(-2);
-        }
-        else{
-            intakeServo.setPower(0);
-        }
-        if(gamepad1.cross) {
-
-            encoderMovement(90,2,0.5);
-            intakeServo.setPower(2);
-            encoderMovement(15,2,0.3);
-            intakeServo.setPower(0);
-            encoderMovement(105,1,0.5);
-            shippingHubLevel(165,1);
-            encoderMovement(60,3,0.5);
-            turn(-123);
-        }
-        if(gamepad1.circle){
-            encoderMovement(10,1,0.5);
-            turn(123);
-            encoderMovement(60, 4, 0.5);
-            shippingHubLevel(0,0.2);
-        }
-        if(gamepad1.triangle){
-            encoderMovement(90,2,0.5);
-            intakeServo.setPower(2);
-            encoderMovement(15,2,0.3);
-            intakeServo.setPower(0);
-            encoderMovement(105,1,0.5);
-            shippingHubLevel(165,1);
-            encoderMovement(60,3,0.5);
-            turn(-123);
-            encoderMovement(10,2,0.5);
-            sleep(250);
-            intakeServo.setPower(2);
-            sleep(3000);
-            intakeServo.setPower(0);
-            sleep(250);
-            encoderMovement(10,1,0.5);
-            turn(123);
-            encoderMovement(60, 4, 0.5);
-            shippingHubLevel(0,0.2);
+        if(gamepad1.dpad_down){
+            pwr -= 0.1;
+            telemetry.addData("power", pwr);
+            telemetry.update();
         }
     }
     public void stop(){

@@ -83,6 +83,8 @@ public class AutoMinus_Blue2_NoCam extends LinearOpMode {
             encoderMovement(60, 3, 0.5);
             encoderMovement(90, 1, 0.5);
             encoderMovement(60, 4, 0.5);
+            shippingHubLevel(0,0.2);
+
             break;
 
         }
