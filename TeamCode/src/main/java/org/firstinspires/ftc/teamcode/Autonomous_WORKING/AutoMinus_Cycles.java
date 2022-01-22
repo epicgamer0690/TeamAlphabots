@@ -1,175 +1,109 @@
-package org.firstinspires.ftc.teamcode.TeleOp_WORKING;
+package org.firstinspires.ftc.teamcode.Autonomous_WORKING;
+//parsh is bad
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.Autonomous_WORKING.AutoMinus_Blue2;
 
-@TeleOp(name="TeleOpTest_TwoPlayer", group="Training")
-public class TeleOpTest_TwoPlayer extends OpMode {
-
-
-
+@Autonomous(name = "Autonomous_Cycle", group = "Training")
+public class AutoMinus_Cycles extends LinearOpMode {
     DcMotor leftWheel;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
-    CRServo intakeServo;
     DcMotor carouselMotor;
+    CRServo intakeServo;
+    RevColorSensorV3 colorSensor;
     BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
-    public boolean IsStopRequested = false;
-
-    AutoMinus_Blue2 robot = new AutoMinus_Blue2();
-    private ElapsedTime runtime= new ElapsedTime();
+    //1 rotation = 360
+    private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
-    public void init() {
+    public void runOpMode() {
         leftWheel = hardwareMap.dcMotor.get("left_wheel");
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        intakeServo = hardwareMap.crservo.get("expansion_servo");
-        armMotor = hardwareMap.dcMotor.get("expansion_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        intakeServo = hardwareMap.crservo.get("expansion_servo");
+        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu.initialize(parameters);
+        //initializing the IMU and setting the units needed
+        leftWheel.setDirection(DcMotor.Direction.REVERSE);
+        backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
+        intakeServo.setDirection(CRServo.Direction.REVERSE);
+        setZeroPowerBehaiv();
+        setAllMotorPowers(0);
+        int level = 3;
 
-        rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
-        backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
+        waitForStart();
 
-        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);  //setting it so when power is 0, robot stops.
-
-    }
-
-    @Override
-    public void loop() {
-        moveDriveTrain();
-        if(gamepad2.dpad_left){
-            shippingHubLevel(65, 1);
-        }
-        if(gamepad2.dpad_right){
-            shippingHubLevel(115, 1 );
-        }
-        if(gamepad2.dpad_up){
-            shippingHubLevel(155, 1);
-        }
-        if(gamepad2.dpad_down){
-            shippingHubLevel(0, 0.2);
-
-        }
-        if(gamepad2.cross) {
-
-            carouselMotor.setPower(0.5);
-
-        } else if(gamepad2.circle){
-
-            carouselMotor.setPower(-0.5);
-        }
-        else {
-            carouselMotor.setPower(0);
-        }
-        if (gamepad1.right_bumper) {
-            intakeServo.setPower(1);
-        }
-        else if(gamepad1.left_bumper){
-            intakeServo.setPower(-2);
-        }
-        else{
-            intakeServo.setPower(0);
-        }
-        if(gamepad1.cross) {
-
-            encoderMovement(90,2,0.5);
+        while (opModeIsActive()) {
+            encoderMovement(80,1,0.5);
             intakeServo.setPower(2);
-            encoderMovement(15,2,0.3);
+            encoderMovement(15,1,0.3);
             intakeServo.setPower(0);
-            encoderMovement(105,1,0.5);
+            encoderMovement(5,3,0.5);
+            encoderMovement(95,2,0.5);
             shippingHubLevel(165,1);
-            encoderMovement(60,3,0.5);
+            encoderMovement(60,4,0.5);
             turn(-123);
-        }
-        if(gamepad1.circle){
             encoderMovement(10,1,0.5);
-            turn(123);
-            encoderMovement(60, 4, 0.5);
-            shippingHubLevel(0,0.2);
-        }
-        if(gamepad1.triangle){
-            encoderMovement(90,2,0.5);
-            intakeServo.setPower(2);
-            encoderMovement(15,2,0.3);
-            intakeServo.setPower(0);
-            encoderMovement(105,1,0.5);
-            shippingHubLevel(165,1);
-            encoderMovement(60,3,0.5);
-            turn(-123);
-            encoderMovement(10,2,0.5);
             sleep(250);
             intakeServo.setPower(2);
             sleep(3000);
             intakeServo.setPower(0);
             sleep(250);
-            encoderMovement(10,1,0.5);
+            encoderMovement(10,2,0.5);
             turn(123);
-            encoderMovement(60, 4, 0.5);
+            encoderMovement(60, 3, 0.5);
             shippingHubLevel(0,0.2);
+            break;
+
         }
     }
-    public void stop(){
-        IsStopRequested = true;
+    public void goToShippingHubLevel(int level) {
+        switch(level) {
+            case 1:
+                shippingHubLevel(65, 1);
+                break;
+            case 2:
+                shippingHubLevel(115, 1);
+                break;
+            case 3:
+                shippingHubLevel(165, 1);
+                break;
+        }
     }
 
-    public void shippingHubLevel(int rotation, double power) {
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(power);
-    }
 
-    public void moveDriveTrain() {
-        double strafe = 0; //Move side-to-side
-        double rotate = 0;
-        double drive = 0;
-        double denominator = 1;
 
-        drive = gamepad1.left_stick_y;
-        strafe = gamepad1.left_stick_x * 1.1;
-        rotate = gamepad1.right_stick_x;
-
-        denominator = Math.max(Math.abs(drive) + Math.abs(strafe)
-        + Math.abs(rotate), 1);
-
-        rightWheel.setPower((drive + strafe + rotate) / denominator);
-        backRightWheel.setPower((drive - rotate + strafe) / denominator);
-        leftWheel.setPower((drive - rotate - strafe) / denominator);
-        backLeftWheel.setPower((drive + rotate - strafe) / denominator);
-    }
     public void encoderMovement(double distance, int direction, double power) {
 
         resetEncoders();
         setRUE();
-
-        leftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         final double ENCODER_TPR = 537.6;
         final double GEAR_RATIO = 1;
@@ -212,11 +146,14 @@ public class TeleOpTest_TwoPlayer extends OpMode {
 
         }
         resetEncoders();
-        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+    public void carouselFunc() {
+        carouselMotor.setPower(0.7);
+        sleep(2000);
+        carouselMotor.setPower(0);
+    }
+
     public void resetAngle() { //resetting the angles (after we finish turn)
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         currAngle = 0;
@@ -246,45 +183,36 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         resetAngle();
         double error = degrees;
 
-        while (IsStopRequested == false && Math.abs(error) > 2) {
+        while (opModeIsActive() && Math.abs(error) > 2) {
             double motorPower = (error < 0 ? -0.3 : 0.3);
             setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
             error = degrees - getAngle();
-
             telemetry.addData("error", error);
             telemetry.addData("angle", currAngle);
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", currAngle);
-            telemetry.addData("3 correction", error);
             telemetry.update();
-
-
         }
         setAllMotorPowers(0);
     }
-
-    public void forward(double degrees, double fl, double fr, double bl, double br) {
-
-        resetAngle();
-        double error = degrees;
-        runtime.startTime();
-
-        while (Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(fl, fr, bl, br);
-            error = degrees - getAngle();
-
-            telemetry.addData("error", error);
-            telemetry.addData("angle", currAngle);
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", currAngle);
-            telemetry.addData("3 correction", error);
-            telemetry.update();
-
-
-        }
-        setAllMotorPowers(0);
+    public void shippingHubLevel(int rotation, double pwr) {
+        resetEncoders();
+        armMotor.setTargetPosition(rotation);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(pwr);
     }
+
+    public void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outakeFunc() {
+        intakeServo.setPower(-1);
+        sleep(3000);
+    }
+
 
     public void setAllMotorPowers(double power) {
         leftWheel.setPower(power);
@@ -334,17 +262,13 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
+
     public void setRWE() {
         leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-    public void sleep(int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 }
+
