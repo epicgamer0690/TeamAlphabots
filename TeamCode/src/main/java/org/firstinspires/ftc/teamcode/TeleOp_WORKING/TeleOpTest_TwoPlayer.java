@@ -34,6 +34,7 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     public boolean IsStopRequested = false;
 
     private ElapsedTime runtime= new ElapsedTime();
+    private ElapsedTime colorTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -42,7 +43,7 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
-        armMotor = hardwareMap.dcMotor.get("expansion_motor");
+        armMotor = hardwareMap.dcMotor.get("expansion_motor2");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
 
@@ -72,15 +73,19 @@ public class TeleOpTest_TwoPlayer extends OpMode {
             shippingHubLevel(115, 1 );
         }
         if(gamepad2.dpad_up){
-            shippingHubLevel(155, 1);
+            shippingHubLevel(-155, 1);
+            telemetry.addData("shipping lvl", "3");
+            telemetry.update();
         }
         if(gamepad2.dpad_down){
             shippingHubLevel(0, 0.2);
 
         }
         if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
+
             gamepad1.rumble(500);
-            gamepad2.rumble(500);
+        }else{
+            colorTimer.reset();
         }
         if(gamepad2.cross) {
 
@@ -107,9 +112,21 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         }else{
             intakeServo.setPower(0);
         }
+        if(runtime.seconds() == 55){
+            gamepad2.rumble(1000);
+            sleep(1000);
+        } else if(runtime.seconds() == 85) {
+            gamepad2.rumble(1000);
+            sleep(1000);
+        }
     }
     public void stop(){
         IsStopRequested = true;
+    }
+
+    public void start(){
+        colorTimer.startTime();
+        runtime.startTime();
     }
 
     public void shippingHubLevel(int rotation, double power) {
@@ -258,7 +275,6 @@ public class TeleOpTest_TwoPlayer extends OpMode {
 
         resetAngle();
         double error = degrees;
-        runtime.startTime();
 
         while (Math.abs(error) > 2) {
             double motorPower = (error < 0 ? -0.3 : 0.3);
