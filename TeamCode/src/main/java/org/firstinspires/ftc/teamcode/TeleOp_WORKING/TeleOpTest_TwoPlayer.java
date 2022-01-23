@@ -24,6 +24,7 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
+    DcMotor armMotor2;
     CRServo intakeServo;
     DcMotor carouselMotor;
     BNO055IMU imu;
@@ -31,7 +32,6 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     private double currAngle = 0.0;
     public boolean IsStopRequested = false;
 
-    AutoMinus_Blue2 robot = new AutoMinus_Blue2();
     private ElapsedTime runtime= new ElapsedTime();
 
     @Override
@@ -42,6 +42,7 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         armMotor = hardwareMap.dcMotor.get("expansion_motor");
+        armMotor2 = hardwareMap.dcMotor.get("expansion_motor2");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
@@ -87,50 +88,18 @@ public class TeleOpTest_TwoPlayer extends OpMode {
             carouselMotor.setPower(0);
         }
         if (gamepad1.right_bumper) {
-            intakeServo.setPower(1);
+            intakeServo.setPower(2);
         }
         else if(gamepad1.left_bumper){
             intakeServo.setPower(-2);
-        }
-        else{
-            intakeServo.setPower(0);
-        }
-        if(gamepad1.cross) {
 
-            encoderMovement(90,2,0.5);
-            intakeServo.setPower(2);
-            encoderMovement(15,2,0.3);
-            intakeServo.setPower(0);
-            encoderMovement(105,1,0.5);
-            shippingHubLevel(165,1);
-            encoderMovement(60,3,0.5);
-            turn(-123);
         }
-        if(gamepad1.circle){
-            encoderMovement(10,1,0.5);
-            turn(123);
-            encoderMovement(60, 4, 0.5);
-            shippingHubLevel(0,0.2);
-        }
-        if(gamepad1.triangle){
-            encoderMovement(90,2,0.5);
-            intakeServo.setPower(2);
-            encoderMovement(15,2,0.3);
+        else if(gamepad2.left_bumper){
+            intakeServo.setPower(-2);
+        }else if(gamepad2.right_bumper) {
+            intakeServo.setPower(-2);
+        }else{
             intakeServo.setPower(0);
-            encoderMovement(105,1,0.5);
-            shippingHubLevel(165,1);
-            encoderMovement(60,3,0.5);
-            turn(-123);
-            encoderMovement(10,2,0.5);
-            sleep(250);
-            intakeServo.setPower(2);
-            sleep(3000);
-            intakeServo.setPower(0);
-            sleep(250);
-            encoderMovement(10,1,0.5);
-            turn(123);
-            encoderMovement(60, 4, 0.5);
-            shippingHubLevel(0,0.2);
         }
     }
     public void stop(){
@@ -139,11 +108,16 @@ public class TeleOpTest_TwoPlayer extends OpMode {
 
     public void shippingHubLevel(int rotation, double power) {
         armMotor.setTargetPosition(rotation);
+        armMotor2.setTargetPosition(rotation);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setPower(power);
+        armMotor2.setPower(power);
     }
 
     public void moveDriveTrain() {
+        double driveForward = 0; //Moves forwards and backwards
+        double driveBackward = 0;
         double strafe = 0; //Move side-to-side
         double rotate = 0;
         double drive = 0;
@@ -153,13 +127,27 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         strafe = gamepad1.left_stick_x * 1.1;
         rotate = gamepad1.right_stick_x;
 
-        denominator = Math.max(Math.abs(drive) + Math.abs(strafe)
-        + Math.abs(rotate), 1);
+        driveForward = gamepad1.right_trigger;
+        driveBackward = gamepad1.left_trigger;
 
-        rightWheel.setPower((drive + strafe + rotate) / denominator);
-        backRightWheel.setPower((drive - rotate + strafe) / denominator);
-        leftWheel.setPower((drive - rotate - strafe) / denominator);
-        backLeftWheel.setPower((drive + rotate - strafe) / denominator);
+        denominator = Math.max(Math.abs(drive) + Math.abs(strafe) + Math.abs(rotate), 1);
+        if(driveForward > 0) {
+            rightWheel.setPower(-driveForward);
+            backRightWheel.setPower(-driveForward);
+            leftWheel.setPower(-driveForward);
+            backLeftWheel.setPower(-driveForward);
+        } else if(driveBackward > 0) {
+            rightWheel.setPower(driveBackward);
+            backRightWheel.setPower(driveBackward);
+            leftWheel.setPower(driveBackward);
+            backLeftWheel.setPower(driveBackward);
+
+        } else {
+            rightWheel.setPower((drive + strafe + rotate) / denominator);
+            backRightWheel.setPower((drive - rotate + strafe) / denominator);
+            leftWheel.setPower((drive - rotate - strafe) / denominator);
+            backLeftWheel.setPower((drive + rotate - strafe) / denominator);
+        }
     }
     public void encoderMovement(double distance, int direction, double power) {
 
