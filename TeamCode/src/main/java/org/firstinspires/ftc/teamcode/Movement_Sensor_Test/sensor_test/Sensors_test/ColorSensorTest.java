@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="ColorSensorTest", group="Training")
     public class ColorSensorTest extends LinearOpMode {
@@ -48,18 +44,55 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
         waitForStart();
         while(opModeIsActive()) {
-//            if((sensorColor.red() + sensorColor.green()) > 3.0 * sensorColor.blue()) {
-//                telemetry.addData("Yellow", true);
-//                telemetry.update();
-//            } else {
-//                telemetry.addData("Yellow", false);
-//                telemetry.update();
-//
-//            }
+            if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
+                telemetry.addData("Yellow", true);
+                telemetry.update();
+            } else {
+                telemetry.addData("Yellow", false);
+                telemetry.update();
+
+            }
+
+
 
 
         }
     }
+
+
+
+    public double averageRed() {
+        int sum = 0;
+        int count = 0;
+        for(int i = 0; i < 101; i++) {
+            sum += sensorColor.red();
+            count++;
+            sleep(100);
+        }
+        return (double) sum/count;
+    }
+
+    public double averageGreen() {
+        int sum = 0;
+        int count = 0;
+        for(int i = 0; i < 101; i++) {
+            sum += sensorColor.green();
+            count++;
+        }
+        return (double) sum/count;
+    }
+
+
+    public double averageBlue() {
+        int sum = 0;
+        int count = 0;
+        for(int i = 0; i < 101; i++) {
+            sum += sensorColor.blue();
+            count++;
+        }
+        return (double) sum/count;
+    }
+
 
 
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp_WORKING;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -24,10 +25,10 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
     DcMotor armMotor;
-    DcMotor armMotor2;
     CRServo intakeServo;
     DcMotor carouselMotor;
     BNO055IMU imu;
+    RevColorSensorV3 sensorColor;
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     public boolean IsStopRequested = false;
@@ -42,8 +43,9 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         armMotor = hardwareMap.dcMotor.get("expansion_motor");
-        armMotor2 = hardwareMap.dcMotor.get("expansion_motor2");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+
 
         rightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //rightWheel
         backRightWheel.setDirection(DcMotorSimple.Direction.REVERSE); //backRightWheel
@@ -75,6 +77,10 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         if(gamepad2.dpad_down){
             shippingHubLevel(0, 0.2);
 
+        }
+        if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
+            gamepad1.rumble(500);
+            gamepad2.rumble(500);
         }
         if(gamepad2.cross) {
 
@@ -108,11 +114,8 @@ public class TeleOpTest_TwoPlayer extends OpMode {
 
     public void shippingHubLevel(int rotation, double power) {
         armMotor.setTargetPosition(rotation);
-        armMotor2.setTargetPosition(rotation);
         armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor.setPower(power);
-        armMotor2.setPower(power);
     }
 
     public void moveDriveTrain() {
