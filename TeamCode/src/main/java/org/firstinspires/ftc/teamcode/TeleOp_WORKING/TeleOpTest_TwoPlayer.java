@@ -24,7 +24,8 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    DcMotor armMotor;
+    DcMotor armMotorLeft;
+    DcMotor armMotorRight;
     CRServo intakeServo;
     DcMotor carouselMotor;
     BNO055IMU imu;
@@ -32,6 +33,8 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     public boolean IsStopRequested = false;
+    public boolean hasFreight = false;
+    public int count = 0;
 
     private ElapsedTime runtime= new ElapsedTime();
     private ElapsedTime colorTimer = new ElapsedTime();
@@ -43,7 +46,8 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
-        armMotor = hardwareMap.dcMotor.get("expansion_motor2");
+        armMotorLeft = hardwareMap.dcMotor.get("expansion_motor1");
+        armMotorRight = hardwareMap.dcMotor.get("expansion_motor2");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
 
@@ -82,11 +86,14 @@ public class TeleOpTest_TwoPlayer extends OpMode {
 
         }
         if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
-
-            gamepad1.rumble(500);
+            count += 1;
+            if(count == 1) {
+                gamepad1.rumble(500);
+            }
         }else{
-            colorTimer.reset();
+            count = 0;
         }
+
         if(gamepad2.cross) {
 
             carouselMotor.setPower(0.5);
@@ -130,9 +137,12 @@ public class TeleOpTest_TwoPlayer extends OpMode {
     }
 
     public void shippingHubLevel(int rotation, double power) {
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(power);
+        armMotorLeft.setTargetPosition(rotation);
+        armMotorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotorLeft.setPower(power);
+        armMotorRight.setTargetPosition(-rotation);
+        armMotorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotorRight.setPower(power);
     }
 
     public void moveDriveTrain() {
