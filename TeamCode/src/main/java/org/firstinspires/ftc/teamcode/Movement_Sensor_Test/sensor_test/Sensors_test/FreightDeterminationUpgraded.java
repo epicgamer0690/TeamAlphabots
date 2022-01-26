@@ -22,7 +22,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * and then snapshot that value for later use when the START
 
  */
-
+@Disabled
 public class FreightDeterminationUpgraded extends LinearOpMode
 {
     OpenCvWebcam webcam;

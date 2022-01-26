@@ -28,7 +28,8 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    DcMotor armMotor;
+    DcMotor armMotor1;
+    DcMotor armMotor2;
     DcMotor carouselMotor;
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
@@ -51,7 +52,8 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+        armMotor1 = hardwareMap.dcMotor.get("expansion_motor1");
+        armMotor2 = hardwareMap.dcMotor.get("expansion_motor2");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
@@ -268,13 +270,14 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         setAllMotorPowers(0);
     }
 
-    public void shippingHubLevel(int rotation, double pwr) {
-        resetEncoders();
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(pwr);
+    public void shippingHubLevel(int rotation, double power) {
+        armMotor1.setTargetPosition(rotation);
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor1.setPower(power);
+        armMotor2.setTargetPosition(-rotation);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setPower(power);
     }
-
     public void sleep(int milliseconds) {
         try {
             Thread.sleep(milliseconds);

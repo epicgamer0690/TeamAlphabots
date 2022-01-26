@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+@Disabled
 @Autonomous(name="Carousel_Test", group="Training")
 public class Carousel_Test extends LinearOpMode {
 

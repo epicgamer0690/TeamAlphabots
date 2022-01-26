@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp_WORKING;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -13,7 +14,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Autonomous_WORKING.AutoMinus_Blue2;
-
 @TeleOp(name="TeleOpTest_CarouselDebug", group="Training")
 public class TeleOpTest_CarouselDebug extends OpMode {
 
@@ -30,7 +30,8 @@ public class TeleOpTest_CarouselDebug extends OpMode {
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     public boolean IsStopRequested = false;
-    static double pwr = 0.3;
+    static double pwr = 0.5;
+    static int msTime = 700;
 
     AutoMinus_Blue2 robot = new AutoMinus_Blue2();
     private ElapsedTime runtime= new ElapsedTime();
@@ -62,7 +63,7 @@ public class TeleOpTest_CarouselDebug extends OpMode {
 
     @Override
     public void loop() {
-        if(gamepad1.cross){
+        if(gamepad1.left_bumper){
             carouselMotor.setPower(pwr);
             telemetry.addData("power", pwr);
             telemetry.update();
@@ -76,6 +77,23 @@ public class TeleOpTest_CarouselDebug extends OpMode {
             pwr -= 0.1;
             telemetry.addData("power", pwr);
             telemetry.update();
+        }
+        if(gamepad1.triangle){
+            pwr += 0.1;
+            telemetry.addData("power", pwr);
+            telemetry.update();
+        }
+        if(gamepad1.cross){
+            pwr -= 0.1;
+            telemetry.addData("power", pwr);
+            telemetry.update();
+        }
+        if(gamepad1.right_bumper){
+            carouselMotor.setPower(0.3);
+            sleep(msTime);
+            carouselMotor.setPower(pwr);
+            sleep(1500);
+
         }
     }
     public void stop(){

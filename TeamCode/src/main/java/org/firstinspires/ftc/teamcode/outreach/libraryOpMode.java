@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.outreach;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-
+@Disabled
 @Autonomous(name = "Library OpMode", group = "Training")
 public class libraryOpMode extends LinearOpMode {
     /*

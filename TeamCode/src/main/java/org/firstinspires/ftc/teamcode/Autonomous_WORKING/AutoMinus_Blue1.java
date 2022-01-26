@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,7 +24,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import java.util.Random;
 
 
-
+@Disabled
 @Autonomous(name = "Autonomous_Blue1_12/11/21", group = "Training")
 public class AutoMinus_Blue1 extends LinearOpMode {
     DcMotor leftWheel;

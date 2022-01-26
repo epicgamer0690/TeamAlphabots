@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.TeleOp_WORKING;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
+@Disabled
 @TeleOp(name="TeleOpTest_FieldCentric", group="Training")
 public class TeleOpTest_2 extends LinearOpMode {
     @Override public void runOpMode() {
