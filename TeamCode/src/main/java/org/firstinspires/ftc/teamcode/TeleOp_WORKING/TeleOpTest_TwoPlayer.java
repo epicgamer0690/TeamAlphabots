@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 
@@ -27,6 +28,7 @@ public class TeleOpTest_TwoPlayer extends OpMode {
 
 
     private ElapsedTime runtime= new ElapsedTime();
+    private ElapsedTime colorTimer= new ElapsedTime();
 
     @Override
     public void init() {
@@ -47,6 +49,16 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);  //setting it so when power is 0, robot stops.
+        armMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        resetArmEncoders();
+        armMotor1.setTargetPosition(0);
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setTargetPosition(0);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
     }
     @Override
@@ -62,43 +74,47 @@ public class TeleOpTest_TwoPlayer extends OpMode {
             shippingHubLevel(155, 1);
         }
         if(gamepad2.dpad_down){
+            shippingHubLevel(30,0.2);
             shippingHubLevel(0, 0.2);
-
         }
+
         if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
             count += 1;
             if(count == 1) {
-                gamepad1.rumble(500);
+                gamepad1.rumble(1, 1, 500);
+                if (intakeServo.getPower() > 0) {
+                    sleep(200);
+                    intakeServo.setPower(0);
+                }
             }
         }else{
             count = 0;
         }
 
         if(gamepad2.cross) {
-
             carouselMotor.setPower(0.5);
-
         } else if(gamepad2.circle){
-
             carouselMotor.setPower(-0.5);
         }
         else {
             carouselMotor.setPower(0);
+        }
+        if(gamepad2.square){
+            resetArmEncoders();
+            armMotor1.setTargetPosition(0);
+            armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armMotor2.setTargetPosition(0);
+            armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         if (gamepad1.right_bumper) {
             intakeServo.setPower(2);
         }
         else if(gamepad1.left_bumper){
             intakeServo.setPower(-2);
-
-        }
-        else if(gamepad2.left_bumper){
-            intakeServo.setPower(2);
-        }else if(gamepad2.right_bumper) {
-            intakeServo.setPower(-2);
         }else{
             intakeServo.setPower(0);
         }
+
         if(runtime.seconds() == 55){
             gamepad2.rumble(1000);
             sleep(1000);
@@ -108,6 +124,8 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         }
     }
     public void shippingHubLevel(int rotation, double power) {
+        armMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor1.setTargetPosition(rotation);
         armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor1.setPower(power);
@@ -122,6 +140,11 @@ public class TeleOpTest_TwoPlayer extends OpMode {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void resetArmEncoders(){
+        armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void moveDriveTrain() {

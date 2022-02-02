@@ -30,7 +30,7 @@ public class TeleOpTest_CarouselDebug extends OpMode {
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     public boolean IsStopRequested = false;
-    static double pwr = 0.5;
+    static double pwr = 0.3;
     static int msTime = 700;
 
     AutoMinus_Blue2 robot = new AutoMinus_Blue2();
@@ -79,230 +79,24 @@ public class TeleOpTest_CarouselDebug extends OpMode {
             telemetry.update();
         }
         if(gamepad1.triangle){
-            pwr += 0.1;
-            telemetry.addData("power", pwr);
+            msTime += 100;
+            telemetry.addData("speed (Ms)", msTime);
             telemetry.update();
         }
         if(gamepad1.cross){
-            pwr -= 0.1;
-            telemetry.addData("power", pwr);
+            msTime -= 100;
+            telemetry.addData("speed (Ms)", msTime);
             telemetry.update();
         }
         if(gamepad1.right_bumper){
-            carouselMotor.setPower(0.3);
+            carouselMotor.setPower(0.2);
             sleep(msTime);
-            carouselMotor.setPower(pwr);
+            carouselMotor.setPower(1);
             sleep(1500);
 
         }
     }
-    public void stop(){
-        IsStopRequested = true;
-    }
 
-    public void shippingHubLevel(int rotation, double power) {
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(power);
-    }
-
-    public void moveDriveTrain() {
-        double strafe = 0; //Move side-to-side
-        double rotate = 0;
-        double drive = 0;
-        double denominator = 1;
-
-        drive = gamepad1.left_stick_y;
-        strafe = gamepad1.left_stick_x * 1.1;
-        rotate = gamepad1.right_stick_x;
-
-        denominator = Math.max(Math.abs(drive) + Math.abs(strafe)
-        + Math.abs(rotate), 1);
-
-        rightWheel.setPower((drive + strafe + rotate) / denominator);
-        backRightWheel.setPower((drive - rotate + strafe) / denominator);
-        leftWheel.setPower((drive - rotate - strafe) / denominator);
-        backLeftWheel.setPower((drive + rotate - strafe) / denominator);
-    }
-    public void encoderMovement(double distance, int direction, double power) {
-
-        resetEncoders();
-        setRUE();
-
-        leftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        final double ENCODER_TPR = 537.6;
-        final double GEAR_RATIO = 1;
-        final double WHEEL_DIAMETER = 9.6;
-        final double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
-        final double ROTATIONS = distance / CIRCUMFERENCE;
-        double ticks = ENCODER_TPR * ROTATIONS * GEAR_RATIO;
-
-        switch (direction) {
-            case 1: // robot will move forward
-                setTargetPositionCounts(ticks, ticks, ticks, ticks);
-                setAllMotorPowers(power);
-                break;
-            case 2: // robot will move backward
-                setTargetPositionCounts(-ticks, -ticks, -ticks, -ticks);
-                setAllMotorPowers(power);
-
-                break;
-            case 3: // robot will strafe left
-                setTargetPositionCounts(-ticks, ticks, ticks, -ticks);
-                setAllMotorPowers(power);
-                break;
-            case 4: // robot will strafe right
-                setTargetPositionCounts(ticks, -ticks, -ticks, ticks);
-                setAllMotorPowers(power);
-                break;
-            case 5: // robot will rotate left
-                setTargetPositionCounts(-ticks, ticks, -ticks, ticks);
-                setAllMotorPowers(power);
-                break;
-            case 6: // robot will rotate right
-                setTargetPositionCounts(ticks, -ticks, ticks, -ticks);
-                setAllMotorPowers(power);
-                break;
-        }
-
-        setRTP();
-
-        while (leftWheel.isBusy() && rightWheel.isBusy() && backLeftWheel.isBusy() && backRightWheel.isBusy()) {
-
-        }
-        resetEncoders();
-        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-    public void resetAngle() { //resetting the angles (after we finish turn)
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        currAngle = 0;
-    }
-
-    public double getAngle() {
-        Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double changeInAngle = orientation.firstAngle - lastAngles.firstAngle; //change in angle from previous angle to current angle
-
-        if (changeInAngle > 180) {
-            changeInAngle -= 360;
-        } else if (changeInAngle <= -180) {
-            changeInAngle += 360;
-        }
-        //these if statements accommodate for the IMU only going until 180 degrees.
-
-        currAngle += changeInAngle;
-        lastAngles = orientation;
-
-        telemetry.addData("gyro", orientation.firstAngle);
-        telemetry.update();
-        return currAngle;
-    }
-
-    public void turn(double degrees) {
-        setRWE();
-        resetAngle();
-        double error = degrees;
-
-        while (IsStopRequested == false && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(-motorPower, motorPower, -motorPower, motorPower);
-            error = degrees - getAngle();
-
-            telemetry.addData("error", error);
-            telemetry.addData("angle", currAngle);
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", currAngle);
-            telemetry.addData("3 correction", error);
-            telemetry.update();
-
-
-        }
-        setAllMotorPowers(0);
-    }
-
-    public void forward(double degrees, double fl, double fr, double bl, double br) {
-
-        resetAngle();
-        double error = degrees;
-        runtime.startTime();
-
-        while (Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            setMotorPowers(fl, fr, bl, br);
-            error = degrees - getAngle();
-
-            telemetry.addData("error", error);
-            telemetry.addData("angle", currAngle);
-            telemetry.addData("1 imu heading", lastAngles.firstAngle);
-            telemetry.addData("2 global heading", currAngle);
-            telemetry.addData("3 correction", error);
-            telemetry.update();
-
-
-        }
-        setAllMotorPowers(0);
-    }
-
-    public void setAllMotorPowers(double power) {
-        leftWheel.setPower(power);
-        rightWheel.setPower(power);
-        backLeftWheel.setPower(power);
-        backRightWheel.setPower(power);
-    }
-
-    public void setMotorPowers(double lw, double rw, double bl, double br) {
-        leftWheel.setPower(lw);
-        rightWheel.setPower(rw);
-        backLeftWheel.setPower(bl);
-        backRightWheel.setPower(br);
-    }
-
-    public void setTargetPositionCounts(double fl_count, double fr_count, double bl_count, double br_count) {
-        leftWheel.setTargetPosition((int) fl_count);
-        rightWheel.setTargetPosition((int) fr_count);
-        backLeftWheel.setTargetPosition((int) bl_count);
-        backRightWheel.setTargetPosition((int) br_count);
-    }
-
-    public void resetEncoders() {
-        leftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
-
-    public void setRTP() {
-        leftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-    public void setRUE() {
-        leftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void setZeroPowerBehaiv() {
-        leftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-    public void setRWE() {
-        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
     public void sleep(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
