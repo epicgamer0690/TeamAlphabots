@@ -91,9 +91,10 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
             turn(-35);
             encoderMovement(100, 4, 0.5);
             encoderMovement(25, 2, 0.5);
+            encoderMovement(5,2,0.3);
             carouselFunc();
             sleep(250);
-            encoderMovement(45, 1, 0.5);
+            encoderMovement(43, 1, 0.5);
 
 
             break;
@@ -103,7 +104,7 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
     public void goToShippingHubLevel(int level) {
         switch(level) {
             case 0:
-                shippingHubLevel(220, 1);
+                shippingHubLevel(0, 1);
                 break;
             case 1:
                 shippingHubLevel(65, 1);
