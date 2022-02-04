@@ -42,7 +42,8 @@ public class Auto1_With_Duck extends LinearOpMode {
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         armMotor1 = hardwareMap.dcMotor.get("expansion_motor1");
-        armMotor2 = hardwareMap.dcMotor.get("expansion_motor2");        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        armMotor2 = hardwareMap.dcMotor.get("expansion_motor2");
+        carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -62,6 +63,12 @@ public class Auto1_With_Duck extends LinearOpMode {
         // armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
+        resetEncoders();
+        resetArmEncoders();
+        armMotor1.setTargetPosition(0);
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setTargetPosition(0);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         int level = 3;
 
 
@@ -71,6 +78,7 @@ public class Auto1_With_Duck extends LinearOpMode {
 
             encoderMovement(10, 1, 0.5); // Drive forward 10 cm
             turn(35);
+            encoderMovement(10,4,0.5);
             goToShippingHubLevel(level);
             sleep(250);
             encoderMovement(60, 1, 0.5);
@@ -81,32 +89,41 @@ public class Auto1_With_Duck extends LinearOpMode {
             sleep(250);
             encoderMovement(20, 2, 0.5);
             sleep(250);
-            encoderMovement(35, 4, 0.5);
+            shippingHubLevel(0, 0.2);
+            sleep(250);
+            encoderMovement(46, 4, 0.5);
             sleep(250);
             encoderMovement(85, 2, 0.5); //Change accordingly
             sleep(250);
             carouselFunc();
-            turn(-35);
             sleep(250);
-            encoderMovement(10, 4, 0.5); //May not be needed
-            turn(90);
+            turn(35);
             sleep(250);
-            intakeServo.setPower(0.5);
+            encoderMovement(10, 1, 0.5);
             sleep(250);
-            runtime.startTime();
-            while(!detectYellow() && runtime.seconds() < 4) {
-                setMotorPowers(-0.5, 0.5, 0.5, -0.5);
-            }
+            encoderMovement(15, 3, 0.5);
             sleep(250);
+            encoderMovement(25, 4, 0.5);
+            sleep(250);
+            turn(95);
+            sleep(250);
+            encoderMovement(11, 1, 0.5);
+            sleep(250);
+            intakeServo.setPower(-0.5);
+            carouselDetectionMovement(60, "right", 0.25);
             intakeServo.setPower(0);
-            sleep(250);
-            turn(-35);
+            break;
+
 
 
 
 
 
         }
+    }
+    public void resetArmEncoders(){
+        armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public void goToShippingHubLevel(int level) {
         switch(level) {
@@ -123,6 +140,38 @@ public class Auto1_With_Duck extends LinearOpMode {
                 shippingHubLevel(165, 1);
                 break;
         }
+    }
+    public void carouselDetectionMovement(double distance, String direction, double power) {
+
+        resetEncoders();
+        setRUE();
+
+        final double ENCODER_TPR = 537.6;
+        final double GEAR_RATIO = 1;
+        final double WHEEL_DIAMETER = 9.6;
+        final double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+        final double ROTATIONS = distance / CIRCUMFERENCE;
+        double ticks = ENCODER_TPR * ROTATIONS * GEAR_RATIO;
+
+        switch (direction) {
+            case "left": // robot will strafe left
+                setTargetPositionCounts(-ticks, ticks, ticks, -ticks);
+                setAllMotorPowers(power);
+                break;
+            case "right": // robot will strafe right
+                setTargetPositionCounts(ticks, -ticks, -ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+        }
+        setRTP();
+
+        while (leftWheel.isBusy() && rightWheel.isBusy() && backLeftWheel.isBusy() && backRightWheel.isBusy()) {
+            if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
+                sleep(200);
+                intakeServo.setPower(0);
+            }
+        }
+        resetEncoders();
     }
 
     public boolean detectYellow() {
@@ -315,4 +364,3 @@ public class Auto1_With_Duck extends LinearOpMode {
     }
 
 }
-
