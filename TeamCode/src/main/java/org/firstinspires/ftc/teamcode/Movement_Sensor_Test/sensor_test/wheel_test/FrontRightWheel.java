@@ -34,7 +34,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
     @Override
     public void loop() {
+
+        rightWheel.setTargetPosition(50);
         rightWheel.setPower(drivePower);
+        rightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while(rightWheel.isBusy()){
+            //nothing
+        }
     }
     @Override
     public void stop() {

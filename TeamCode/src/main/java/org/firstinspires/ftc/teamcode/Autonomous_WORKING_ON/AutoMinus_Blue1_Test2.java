@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-@Disabled
+
 @Autonomous(name="AutoMinus_Blue1_Test2", group="Training")
 public class AutoMinus_Blue1_Test2 extends OpMode {
 
@@ -38,7 +38,6 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
@@ -46,12 +45,12 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
     }
     @Override
     public void loop() {
+        encoderMovement(100, 3, 0.5);
     }
 
     @Override
     public void start() {
-        encoderMovement(100, 1, 0.5);
-        encoderMovement(100, 3, 0.5);
+
     }
 
     @Override

@@ -34,7 +34,12 @@ public class RearRightWheel extends OpMode {
 
     @Override
     public void loop() {
+        backRightWheel.setTargetPosition(50);
         backRightWheel.setPower(drivePower);
+        backRightWheel.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while(backRightWheel.isBusy()){
+            //nothing
+        }
     }
     @Override
     public void stop() {

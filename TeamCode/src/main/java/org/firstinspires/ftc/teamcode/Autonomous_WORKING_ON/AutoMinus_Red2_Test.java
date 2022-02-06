@@ -37,10 +37,10 @@ public class AutoMinus_Red2_Test extends LinearOpMode {
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
-    /*OpenCvWebcam webcam;
+    OpenCvWebcam webcam;
     SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
     SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
-*/
+
 
     @Override
     public void runOpMode() {
@@ -68,7 +68,7 @@ public class AutoMinus_Red2_Test extends LinearOpMode {
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
         // Initializing the camera
-        /*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
         webcam.setPipeline(pipeline);
@@ -92,10 +92,10 @@ public class AutoMinus_Red2_Test extends LinearOpMode {
 
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
-        }*/
+        }
         int level = 3;
 
-        /*snapshotAnalysis = pipeline.getAnalysis();
+        snapshotAnalysis = pipeline.getAnalysis();
 
         telemetry.addData("Snapshot post-START analysis", snapshotAnalysis);
         telemetry.update();
@@ -111,8 +111,8 @@ public class AutoMinus_Red2_Test extends LinearOpMode {
                 level = 2;
                 break;
 
-        }w
-        */
+        }
+
 
 
         waitForStart();

@@ -24,7 +24,6 @@ import org.openftc.easyopencv.OpenCvWebcam;
 import java.util.Random;
 
 
-@Disabled
 @Autonomous(name = "Autonomous_Blue1_12/11/21", group = "Training")
 public class AutoMinus_Blue1 extends LinearOpMode {
     DcMotor leftWheel;
