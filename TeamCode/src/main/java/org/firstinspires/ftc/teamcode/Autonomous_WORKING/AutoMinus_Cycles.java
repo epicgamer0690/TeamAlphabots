@@ -25,12 +25,13 @@ public class AutoMinus_Cycles extends LinearOpMode {
     DcMotor armMotor;
     DcMotor carouselMotor;
     CRServo intakeServo;
-    RevColorSensorV3 colorSensor;
+    RevColorSensorV3 sensorColor;
     BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
+    public int count = 0;
 
     @Override
     public void runOpMode() {
@@ -40,8 +41,8 @@ public class AutoMinus_Cycles extends LinearOpMode {
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
         armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
+        sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
-        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -54,7 +55,6 @@ public class AutoMinus_Cycles extends LinearOpMode {
         //initializing the IMU and setting the units needed
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-        intakeServo.setDirection(CRServo.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
         int level = 3;
@@ -63,8 +63,8 @@ public class AutoMinus_Cycles extends LinearOpMode {
 
         while (opModeIsActive()) {
             encoderMovement(80,1,0.5);
-            intakeServo.setPower(2);
-            encoderMovement(15,1,0.3);
+            intakeServo.setPower(-2);
+            carouselMovement(15,1,0.3);
             intakeServo.setPower(0);
             encoderMovement(5,3,0.5);
             encoderMovement(95,2,0.5);
@@ -84,7 +84,25 @@ public class AutoMinus_Cycles extends LinearOpMode {
             break;
 
         }
+        while (!isStarted() && !isStopRequested()) {
+            if ((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
+                count = 1;
+                if (intakeServo.getPower() > 0) {
+                    if (count == 1) {
+                        sleep(200);
+                    }else {
+                        count = 0;
+                    }
+                    intakeServo.setPower(0);
+
+
+                }
+            }
+        }
     }
+
+
+
     public void goToShippingHubLevel(int level) {
         switch(level) {
             case 1:
@@ -145,6 +163,57 @@ public class AutoMinus_Cycles extends LinearOpMode {
 
         while (leftWheel.isBusy() && rightWheel.isBusy() && backLeftWheel.isBusy() && backRightWheel.isBusy()) {
 
+        }
+        resetEncoders();
+    }
+
+    public void carouselMovement(double distance, int direction, double power) {
+
+        resetEncoders();
+        setRUE();
+
+        final double ENCODER_TPR = 537.6;
+        final double GEAR_RATIO = 1;
+        final double WHEEL_DIAMETER = 9.6;
+        final double CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+        final double ROTATIONS = distance / CIRCUMFERENCE;
+        double ticks = ENCODER_TPR * ROTATIONS * GEAR_RATIO;
+
+        switch (direction) {
+            case 1: // robot will move forward
+                setTargetPositionCounts(ticks, ticks, ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 2: // robot will move backward
+                setTargetPositionCounts(-ticks, -ticks, -ticks, -ticks);
+                setAllMotorPowers(power);
+
+                break;
+            case 3: // robot will strafe left
+                setTargetPositionCounts(-ticks, ticks, ticks, -ticks);
+                setAllMotorPowers(power);
+                break;
+            case 4: // robot will strafe right
+                setTargetPositionCounts(ticks, -ticks, -ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 5: // robot will rotate left
+                setTargetPositionCounts(-ticks, ticks, -ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 6: // robot will rotate right
+                setTargetPositionCounts(ticks, -ticks, ticks, -ticks);
+                setAllMotorPowers(power);
+                break;
+        }
+
+        setRTP();
+
+        while (leftWheel.isBusy() && rightWheel.isBusy() && backLeftWheel.isBusy() && backRightWheel.isBusy()) {
+            if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
+                sleep(200);
+                intakeServo.setPower(0);
+            }
         }
         resetEncoders();
     }

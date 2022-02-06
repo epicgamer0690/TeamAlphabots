@@ -34,6 +34,7 @@ public class Auto1_With_Duck extends LinearOpMode {
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
+    public int count = 0;
 
     @Override
     public void runOpMode() {
@@ -59,7 +60,6 @@ public class Auto1_With_Duck extends LinearOpMode {
 
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-        intakeServo.setDirection(CRServo.Direction.REVERSE);
         // armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
@@ -78,12 +78,12 @@ public class Auto1_With_Duck extends LinearOpMode {
 
             encoderMovement(10, 1, 0.5); // Drive forward 10 cm
             turn(35);
-            encoderMovement(10,4,0.5);
+            encoderMovement(10, 4, 0.5);
             goToShippingHubLevel(level);
             sleep(250);
             encoderMovement(60, 1, 0.5);
             sleep(250);
-            intakeServo.setPower(2);
+            intakeServo.setPower(-2);
             sleep(3000);
             intakeServo.setPower(0);
             sleep(250);
@@ -109,18 +109,29 @@ public class Auto1_With_Duck extends LinearOpMode {
             sleep(250);
             encoderMovement(11, 1, 0.5);
             sleep(250);
-            intakeServo.setPower(-0.5);
-            carouselDetectionMovement(60, "right", 0.25);
+            intakeServo.setPower(0.5);
+            carouselMovement(60, 4, 0.25);
             intakeServo.setPower(0);
             break;
-
-
-
-
-
-
         }
-    }
+
+        while (!isStarted() && !isStopRequested()) {
+            if ((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
+                count = 1;
+                if (intakeServo.getPower() > 0) {
+                    if (count == 1) {
+                        sleep(200);
+                    }else {
+                        count = 0;
+                    }
+                        intakeServo.setPower(0);
+
+
+                    }
+                }
+            }
+        }
+
     public void resetArmEncoders(){
         armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -141,7 +152,7 @@ public class Auto1_With_Duck extends LinearOpMode {
                 break;
         }
     }
-    public void carouselDetectionMovement(double distance, String direction, double power) {
+    public void carouselMovement(double distance, int direction, double power) {
 
         resetEncoders();
         setRUE();
@@ -154,15 +165,33 @@ public class Auto1_With_Duck extends LinearOpMode {
         double ticks = ENCODER_TPR * ROTATIONS * GEAR_RATIO;
 
         switch (direction) {
-            case "left": // robot will strafe left
+            case 1: // robot will move forward
+                setTargetPositionCounts(ticks, ticks, ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 2: // robot will move backward
+                setTargetPositionCounts(-ticks, -ticks, -ticks, -ticks);
+                setAllMotorPowers(power);
+
+                break;
+            case 3: // robot will strafe left
                 setTargetPositionCounts(-ticks, ticks, ticks, -ticks);
                 setAllMotorPowers(power);
                 break;
-            case "right": // robot will strafe right
+            case 4: // robot will strafe right
                 setTargetPositionCounts(ticks, -ticks, -ticks, ticks);
                 setAllMotorPowers(power);
                 break;
+            case 5: // robot will rotate left
+                setTargetPositionCounts(-ticks, ticks, -ticks, ticks);
+                setAllMotorPowers(power);
+                break;
+            case 6: // robot will rotate right
+                setTargetPositionCounts(ticks, -ticks, ticks, -ticks);
+                setAllMotorPowers(power);
+                break;
         }
+
         setRTP();
 
         while (leftWheel.isBusy() && rightWheel.isBusy() && backLeftWheel.isBusy() && backRightWheel.isBusy()) {

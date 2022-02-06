@@ -77,15 +77,14 @@ public class TeleOpTest_TwoPlayer extends OpMode {
             shippingHubLevel(30,0.2);
             shippingHubLevel(0, 0.2);
         }
-
         if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
             count += 1;
             if(count == 1) {
                 gamepad1.rumble(1, 1, 500);
-                if (intakeServo.getPower() > 0) {
-                    sleep(200);
-                    intakeServo.setPower(0);
-                }
+            if (intakeServo.getPower() > 0) {
+                sleep(200);
+                intakeServo.setPower(0);
+            }
             }
         }else{
             count = 0;

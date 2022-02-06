@@ -65,7 +65,6 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
 
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-        intakeServo.setDirection(CRServo.Direction.REVERSE);
         // armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
@@ -82,7 +81,7 @@ public class AutoMinus_Blue1_NoCam extends LinearOpMode {
             sleep(250);
             encoderMovement(60, 1, 0.5);
             sleep(250);
-            intakeServo.setPower(2);
+            intakeServo.setPower(-2);
             sleep(3000);
             intakeServo.setPower(0);
             sleep(250);

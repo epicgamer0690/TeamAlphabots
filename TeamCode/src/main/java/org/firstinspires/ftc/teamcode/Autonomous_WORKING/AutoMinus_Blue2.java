@@ -64,7 +64,6 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         //initializing the IMU and setting the units needed
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-        intakeServo.setDirection(CRServo.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
         // Initializing the camera
@@ -124,7 +123,7 @@ public class AutoMinus_Blue2 extends LinearOpMode {
             sleep(250);
             encoderMovement(50, 1, 0.5);
             sleep(250);
-            intakeServo.setPower(2);
+            intakeServo.setPower(-2);
             sleep(3000);
             intakeServo.setPower(0);
             sleep(250);
