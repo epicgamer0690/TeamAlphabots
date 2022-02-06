@@ -94,8 +94,6 @@ public class AutoMinus_Cycles extends LinearOpMode {
                         count = 0;
                     }
                     intakeServo.setPower(0);
-
-
                 }
             }
         }
