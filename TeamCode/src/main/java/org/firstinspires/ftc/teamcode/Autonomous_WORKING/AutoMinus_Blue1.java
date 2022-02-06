@@ -154,7 +154,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
                 shippingHubLevel(65, 1);
                 break;
             case 2:
-                shippingHubLevel(115, 1);
+                shippingHubLevel(   115, 1);
                 break;
             case 3:
                 shippingHubLevel(165, 1);

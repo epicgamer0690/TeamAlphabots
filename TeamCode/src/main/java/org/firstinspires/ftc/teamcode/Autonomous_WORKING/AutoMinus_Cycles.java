@@ -15,14 +15,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-@Disabled
+
 @Autonomous(name = "Autonomous_Cycle", group = "Training")
 public class AutoMinus_Cycles extends LinearOpMode {
     DcMotor leftWheel;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    DcMotor armMotor;
+    DcMotor armMotor1;
+    DcMotor armMotor2;
     DcMotor carouselMotor;
     CRServo intakeServo;
     RevColorSensorV3 sensorColor;
@@ -39,10 +40,11 @@ public class AutoMinus_Cycles extends LinearOpMode {
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+        armMotor1 = hardwareMap.dcMotor.get("expansion_motor1");
+        armMotor2 = hardwareMap.dcMotor.get("expansion_motor2");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
-        sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
+        sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -53,10 +55,18 @@ public class AutoMinus_Cycles extends LinearOpMode {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
         //initializing the IMU and setting the units needed
+
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
+        // armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
+        resetEncoders();
+        resetArmEncoders();
+        armMotor1.setTargetPosition(0);
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setTargetPosition(0);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         int level = 3;
 
         waitForStart();
@@ -261,11 +271,18 @@ public class AutoMinus_Cycles extends LinearOpMode {
         }
         setAllMotorPowers(0);
     }
-    public void shippingHubLevel(int rotation, double pwr) {
-        resetEncoders();
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(pwr);
+    public void shippingHubLevel(int rotation, double power) {
+        armMotor1.setTargetPosition(rotation);
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor1.setPower(power);
+        armMotor2.setTargetPosition(-rotation);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setPower(power);
+    }
+
+    public void resetArmEncoders(){
+        armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void sleep(int milliseconds) {

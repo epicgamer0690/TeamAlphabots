@@ -30,7 +30,9 @@ public class AutoMinus_Blue2 extends LinearOpMode {
     DcMotor armMotor;
     DcMotor carouselMotor;
     CRServo intakeServo;
-    RevColorSensorV3 colorSensor;
+    DcMotor armMotor1;
+    DcMotor armMotor2;
+    RevColorSensorV3 sensorColor;
     BNO055IMU imu;
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
@@ -47,10 +49,11 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+        armMotor1 = hardwareMap.dcMotor.get("expansion_motor1");
+        armMotor2 = hardwareMap.dcMotor.get("expansion_motor2");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
-        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
+        sensorColor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -61,11 +64,20 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
         //initializing the IMU and setting the units needed
+
         leftWheel.setDirection(DcMotor.Direction.REVERSE);
         backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
+        // armMotor.setDirection(DcMotor.Direction.REVERSE);
         setZeroPowerBehaiv();
         setAllMotorPowers(0);
-        // Initializing the camera
+        resetEncoders();
+        resetArmEncoders();
+        armMotor1.setTargetPosition(0);
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setTargetPosition(0);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        int level = 3;
+        //initializing the IMU and setting the units needed
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
@@ -91,7 +103,6 @@ public class AutoMinus_Blue2 extends LinearOpMode {
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
-        int level = 0;
 
         snapshotAnalysis = pipeline.getAnalysis();
 
@@ -213,6 +224,11 @@ public class AutoMinus_Blue2 extends LinearOpMode {
         currAngle = 0;
     }
 
+    public void resetArmEncoders() {
+        armMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
     public double getAngle() {
         Orientation orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double changeInAngle = orientation.firstAngle - lastAngles.firstAngle; //change in angle from previous angle to current angle
@@ -278,11 +294,13 @@ public class AutoMinus_Blue2 extends LinearOpMode {
     }
 
 
-    public void shippingHubLevel(int rotation, double pwr) {
-        resetEncoders();
-        armMotor.setTargetPosition(rotation);
-        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armMotor.setPower(pwr);
+    public void shippingHubLevel(int rotation, double power) {
+        armMotor1.setTargetPosition(rotation);
+        armMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor1.setPower(power);
+        armMotor2.setTargetPosition(-rotation);
+        armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor2.setPower(power);
     }
 
     public void sleep(int milliseconds) {

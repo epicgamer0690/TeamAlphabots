@@ -93,7 +93,7 @@ public class Auto1_With_Duck extends LinearOpMode {
             sleep(250);
             encoderMovement(46, 4, 0.5);
             sleep(250);
-            encoderMovement(85, 2, 0.5); //Change accordingly
+            encoderMovement(80, 2, 0.5); //Change accordingly
             sleep(250);
             carouselFunc();
             sleep(250);
@@ -107,11 +107,26 @@ public class Auto1_With_Duck extends LinearOpMode {
             sleep(250);
             turn(95);
             sleep(250);
-            encoderMovement(11, 1, 0.5);
+            encoderMovement(13, 1, 0.5);
             sleep(250);
             intakeServo.setPower(0.5);
             carouselMovement(60, 4, 0.25);
+            sleep(250);
             intakeServo.setPower(0);
+            turn(-155);
+            sleep(250);
+            encoderMovement(35, 1, 0.5);
+            sleep(250);
+            shippingHubLevel(155, 1);
+            sleep(250);
+            intakeServo.setPower(1);
+            sleep(1000);
+            intakeServo.setPower(0);
+            encoderMovement(10, 2, 0.5);
+            sleep(250);
+            turn(-25);
+            sleep(250);
+            encoderMovement(115, 4, 1);
             break;
         }
 
@@ -203,13 +218,6 @@ public class Auto1_With_Duck extends LinearOpMode {
         resetEncoders();
     }
 
-    public boolean detectYellow() {
-        if((sensorColor.red() >= (1.5 * sensorColor.blue())) && (sensorColor.green() >= (1.5 * sensorColor.blue()))) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 
     public void encoderMovement(double distance, int direction, double power) {

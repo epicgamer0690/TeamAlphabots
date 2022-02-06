@@ -20,7 +20,6 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
     DcMotor rightWheel;
     DcMotor backLeftWheel;
     DcMotor backRightWheel;
-    DcMotor armMotor;
     DcMotor carouselMotor;
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
@@ -46,11 +45,11 @@ public class AutoMinus_Blue1_Test2 extends OpMode {
     @Override
     public void loop() {
         encoderMovement(100, 3, 0.5);
+
     }
 
     @Override
     public void start() {
-
     }
 
     @Override

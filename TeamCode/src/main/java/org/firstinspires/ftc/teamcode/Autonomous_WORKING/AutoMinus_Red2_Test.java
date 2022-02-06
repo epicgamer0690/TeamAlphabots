@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous_WORKING_ON;
+package org.firstinspires.ftc.teamcode.Autonomous_WORKING;
 //parsh is bad
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -21,9 +21,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-
-@Autonomous(name = "Autonomous_Red1_Test", group = "Training")
-public class AutoMinus_Red1_Test extends LinearOpMode {
+@Autonomous(name = "Autonomous_Red2", group = "Training")
+public class AutoMinus_Red2_Test extends LinearOpMode {
     DcMotor leftWheel;
     DcMotor rightWheel;
     DcMotor backLeftWheel;
@@ -34,13 +33,10 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
     CRServo intakeServo;
     RevColorSensorV3 colorSensor;
     BNO055IMU imu;
-    boolean isStopRequested = false;
-    double drivePower = 0.5;
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
     //1 rotation = 360
     private final ElapsedTime runtime = new ElapsedTime();
-
     OpenCvWebcam webcam;
     SkystoneDeterminationExample.SkystoneDeterminationPipeline pipeline;
     SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition snapshotAnalysis = SkystoneDeterminationExample.SkystoneDeterminationPipeline.SkystonePosition.LEFT; // default
@@ -67,7 +63,11 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu.initialize(parameters);
         //initializing the IMU and setting the units needed
-
+        leftWheel.setDirection(DcMotor.Direction.REVERSE);
+        backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
+        setZeroPowerBehaiv();
+        setAllMotorPowers(0);
+        // Initializing the camera
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         pipeline = new SkystoneDeterminationExample.SkystoneDeterminationPipeline();
@@ -93,14 +93,7 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
-
-        leftWheel.setDirection(DcMotor.Direction.REVERSE);
-        backLeftWheel.setDirection(DcMotor.Direction.REVERSE);
-        // armMotor.setDirection(DcMotor.Direction.REVERSE);
-        setZeroPowerBehaiv();
-        setAllMotorPowers(0);
         int level = 3;
-
 
         snapshotAnalysis = pipeline.getAnalysis();
 
@@ -109,15 +102,14 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
 
         switch(snapshotAnalysis) { // Determine which level it is on in init
             case LEFT:
-                level = 1;
+                level = 3;
                 break;
             case RIGHT:
-                level = 3;
+                level = 1;
                 break;
             case CENTER:
                 level = 2;
                 break;
-
 
         }
 
@@ -126,9 +118,8 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-
-            encoderMovement(10, 1, 0.5); // Drive forward 10 cm
-            turn(-33);
+            encoderMovement(10, 1, 0.5);
+            turn(33);
             goToShippingHubLevel(level);
             sleep(250);
             encoderMovement(53, 1, 0.5);
@@ -137,25 +128,18 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
             sleep(3000);
             intakeServo.setPower(0);
             sleep(250);
-            encoderMovement(20, 2, 0.5);
+            encoderMovement(10, 2, 0.5);
             sleep(250);
-            turn(-57);
-            encoderMovement(90, 2, 0.5);
-            encoderMovement(40, 4, 0.5);
-            carouselFunc(-0.5);
-            sleep(250);
-            encoderMovement(65, 3, 0.5);
-
-
+            turn(-123);
+            encoderMovement(60, 4, 0.5);
+            encoderMovement(90, 1, 0.5);
+            encoderMovement(60, 3, 0.5);
             break;
 
         }
     }
     public void goToShippingHubLevel(int level) {
         switch(level) {
-            case 0:
-                shippingHubLevel(0, 1);
-                break;
             case 1:
                 shippingHubLevel(65, 1);
                 break;
@@ -167,6 +151,7 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
                 break;
         }
     }
+
 
 
     public void encoderMovement(double distance, int direction, double power) {
@@ -217,8 +202,8 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         resetEncoders();
     }
 
-    public void carouselFunc(double pwr) {
-        carouselMotor.setPower(pwr);
+    public void carouselFunc() {
+        carouselMotor.setPower(0.7);
         sleep(2000);
         carouselMotor.setPower(0);
     }
@@ -277,6 +262,7 @@ public class AutoMinus_Red1_Test extends LinearOpMode {
         armMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armMotor2.setPower(power);
     }
+
     public void sleep(int milliseconds) {
         try {
             Thread.sleep(milliseconds);

@@ -20,6 +20,7 @@ package org.firstinspires.ftc.teamcode.Movement_Sensor_Test.sensor_test.Sensors_
  * SOFTWARE.
  */
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -36,8 +37,8 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * and then snapshot that value for later use when the START
  * command is issued. The pipeline is re-used from SkystoneDeterminationExample
  */
-@Disabled
-@TeleOp
+
+@Autonomous
 public class AutoMinusTeest extends LinearOpMode
 {
     OpenCvWebcam webcam;
