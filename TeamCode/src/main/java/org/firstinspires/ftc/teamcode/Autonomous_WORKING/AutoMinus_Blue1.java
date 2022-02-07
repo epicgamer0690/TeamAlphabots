@@ -52,7 +52,8 @@ public class AutoMinus_Blue1 extends LinearOpMode {
         rightWheel = hardwareMap.dcMotor.get("right_wheel");
         backRightWheel = hardwareMap.dcMotor.get("back_right_wheel");
         backLeftWheel = hardwareMap.dcMotor.get("back_left_wheel");
-        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor1");
+        armMotor = hardwareMap.get(DcMotor.class, "expansion_motor1");
         carouselMotor = hardwareMap.get(DcMotor.class, "carousel_arm");
         intakeServo = hardwareMap.crservo.get("expansion_servo");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "color_sensor");
@@ -76,7 +77,7 @@ public class AutoMinus_Blue1 extends LinearOpMode {
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override
