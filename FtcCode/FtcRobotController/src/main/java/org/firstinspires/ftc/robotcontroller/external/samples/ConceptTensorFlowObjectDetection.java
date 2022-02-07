@@ -42,7 +42,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
- * determine the position of the Ultimate Goal game elements.
+ * determine the position of the Freight Frenzy game elements.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
@@ -52,9 +52,30 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  */
 @Autonomous(name = "ConceptTensorFlowObjectDetectionTest", group = "Training")
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
+<<<<<<< HEAD:FtcCode/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/ConceptTensorFlowObjectDetection.java
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
+=======
+  /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
+   * the following 4 detectable objects
+   *  0: Ball,
+   *  1: Cube,
+   *  2: Duck,
+   *  3: Marker (duck location tape marker)
+   *
+   *  Two additional model assets are available which only contain a subset of the objects:
+   *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
+   *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
+   */
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String[] LABELS = {
+      "Ball",
+      "Cube",
+      "Duck",
+      "Marker"
+    };
+>>>>>>> e945da24e6bbbd81f58cfc52de5d6bb46d0652c9:FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/ConceptTensorFlowObjectDetection.java
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -118,6 +139,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                     // the last time that call was made.
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
+<<<<<<< HEAD:FtcCode/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/ConceptTensorFlowObjectDetection.java
                         telemetry.addData("# Object Detected", updatedRecognitions.size());
 
                         // step through the list of recognitions and display boundary info.
@@ -130,13 +152,24 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                                     recognition.getRight(), recognition.getBottom());
                         }
                         telemetry.update();
+=======
+                      telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                      // step through the list of recognitions and display boundary info.
+                      int i = 0;
+                      for (Recognition recognition : updatedRecognitions) {
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                          recognition.getLeft(), recognition.getTop());
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
+                        i++;
+                      }
+                      telemetry.update();
+>>>>>>> e945da24e6bbbd81f58cfc52de5d6bb46d0652c9:FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/ConceptTensorFlowObjectDetection.java
                     }
                 }
             }
-        }
-
-        if (tfod != null) {
-            tfod.shutdown();
         }
     }
 
@@ -166,8 +199,10 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.isModelTensorFlow2 = true;
+        tfodParameters.inputSize = 320;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
 
 
